@@ -20,6 +20,7 @@ void abssort(float *x, unsigned N)
 int main()
 {  
     auto i = 0;
+    auto j = L"123";
     auto nums = {1, 2, 3, 4, 5};
     for(auto num : nums)
     {
