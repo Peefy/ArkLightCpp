@@ -1,3 +1,4 @@
+#pragma GCC diagnostic error "-std=c++11" 
 
 #include <stdint.h>
 #include <iostream>
@@ -10,32 +11,32 @@
 
 using namespace std;
 
-void abssort(float *x, unsigned N)
-{
-  std::sort(x,
-            x + N,
-            [](float a, float b) { return std::abs(a) < std::abs(b); });
-}
+using namespace util;
 
 int main()
 {  
     auto i = 0;
     auto j = L"123";
-    auto nums = {1, 2, 3, 4, 5};
+    vector<int> nums;
+    nums.push_back(1);
+    nums.push_back(2);
+    nums.push_back(3);
+    nums.push_back(4);
     for(auto num : nums)
     {
         cout << num << " ";
     }
-    std::cout << [](float f) -> int { return std::abs(f); } (-3.5);
-    auto lambda = [] (float val) -> int { return val * 100; };
+    //std::cout << [](float f) -> int { return std::abs(f); } (-3.5);
+    //auto lambda = [] (float val) -> int { return val * 100; };
     float f0 = 1.0;
-    std::cout << [=](float f) mutable { return f0 += std::abs(f); } (-3.5);
+    //std::cout << [=](float f) mutable { return f0 += std::abs(f); } (-3.5);
     std::cout << '\n' << f0 << '\n';
     cout << endl;
     cout << "hello world" << endl;
-    unique_ptr<util::ChinaDate> chinadate(new util::ChinaDate);
-    cout << chinadate->GetLongSecond() << endl;
-    getchar();
+    cout << "hello world" << endl;
+    //ChinaDate* chinadate = new ChinaDate;
+    //cout << chinadate->GetLongSecond() << endl;
+    //getchar();
     return 0;
 }
 
