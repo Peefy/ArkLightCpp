@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "xmemory0": "cpp",
+        "xtr1common": "cpp",
+        "algorithm": "cpp",
+        "vector": "cpp",
+        "xstddef": "cpp",
+        "cstddef": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "ios": "cpp",
+        "xlocnum": "cpp",
+        "cstdio": "cpp"
+    }
+}
