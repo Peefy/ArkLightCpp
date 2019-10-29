@@ -1,7 +1,8 @@
 
 #include "chinadate.h"
 
-namespace util{
+namespace ArkLight {
+namespace Util {
     ChinaDate::ChinaDate()
     {
         this->tick = 0;
@@ -18,3 +19,6 @@ namespace util{
     }
 
 }
+}
+
+

@@ -2,8 +2,8 @@
 #ifndef __CHINA_DATE_H
 #define __CHINA_DATE_H
 
-namespace util{
-
+namespace ArkLight {
+namespace Util {
     class ChinaDate
     {
     public:
@@ -12,7 +12,7 @@ namespace util{
         ChinaDate(const ChinaDate &) = default;
         ChinaDate &operator=(ChinaDate &&) = default;
         ChinaDate &operator=(const ChinaDate &) = default;
-        ~ChinaDate();
+        virtual ~ChinaDate();
     
         int GetLongSecond();
 
@@ -21,7 +21,8 @@ namespace util{
         int tick;
     };
     
+    }
 }
 
-#endif // !__CHINA_DATE_H
+#endif 
 
