@@ -1,8 +1,8 @@
 
 #include "object.h"
 
-namespace ArkLight {
-    namespace Core {
+namespace arklight {
+    namespace core {
         
     }
 }

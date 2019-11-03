@@ -1,8 +1,8 @@
 
 #include "timer.h"
 
-namespace ArkLight {
-    namespace Thread {
+namespace arklight {
+    namespace thread {
         
     }
 }

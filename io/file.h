@@ -2,8 +2,8 @@
 #ifndef __FILE_H_
 #define __FILE_H_
 
-namespace ArkLight {
-    namespace IO {
+namespace arklight {
+    namespace io {
         class File
         {
         private:

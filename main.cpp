@@ -8,10 +8,10 @@
 #include <memory>
 
 #include "util/chinadate.h"
+#include "platform/platform.hpp"
 
 using namespace std;
-
-using namespace util;
+using namespace arklight::util;
 
 int main()
 {  

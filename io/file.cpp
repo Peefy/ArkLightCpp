@@ -1,8 +1,8 @@
 
 #include "file.h"
 
-namespace ArkLight {
-    namespace IO {
+namespace arklight {
+    namespace io {
         
     }
 }

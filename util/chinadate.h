@@ -2,8 +2,9 @@
 #ifndef __CHINA_DATE_H
 #define __CHINA_DATE_H
 
-namespace ArkLight {
-namespace Util {
+namespace arklight {
+namespace util {
+    
     class ChinaDate
     {
     public:

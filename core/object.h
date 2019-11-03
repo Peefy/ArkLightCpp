@@ -2,16 +2,12 @@
 #ifndef __OBJECT_H_
 #define __OBJECT_H_
 
-namespace ArkLight {
-    namespace Core {
+namespace arklight {
+    namespace core {
         class Object
         {
-        private:
-            /* data */
         public:
-            Object(/* args */);
-            explicit Object(int haddle);
-            virtual ~Object();
+            virtual ~Object() {}
         };   
     }
 }
