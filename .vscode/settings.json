@@ -11,6 +11,7 @@
         "ostream": "cpp",
         "ios": "cpp",
         "xlocnum": "cpp",
-        "cstdio": "cpp"
+        "cstdio": "cpp",
+        "xstring": "cpp"
     }
 }

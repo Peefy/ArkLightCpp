@@ -2,28 +2,48 @@
 #ifndef __CHINA_DATE_H
 #define __CHINA_DATE_H
 
-namespace arklight {
-namespace util {
-    
-    class ChinaDate
-    {
-    public:
-        ChinaDate();
-        ChinaDate(ChinaDate &&) = default;
-        ChinaDate(const ChinaDate &) = default;
-        ChinaDate &operator=(ChinaDate &&) = default;
-        ChinaDate &operator=(const ChinaDate &) = default;
-        virtual ~ChinaDate();
-    
-        int GetLongSecond();
+#include <string>
+#include <ctime>
 
-    private:
-        int time = 0;
-        int tick;
-    };
-    
-    }
-}
+using namespace std;
 
-#endif 
+namespace arklight
+{
+namespace util
+{
 
+template <typename StringT>
+class ChinaDateBase
+{
+public:
+    ChinaDateBase();
+    ChinaDateBase(ChinaDateBase &&) = default;
+    ChinaDateBase(const ChinaDateBase &) = default;
+    ChinaDateBase &operator=(ChinaDateBase &&) = default;
+    ChinaDateBase &operator=(const ChinaDateBase &) = default;
+    virtual ~ChinaDateBase();
+private:
+    int _time = 0;
+    int _tick = 0;
+private:
+    int _intYear;       // 农历年(整型)
+    int _intMonth;      // 农历月(整型)
+    int _intDay;        // 农历天(整型)
+    StringT _strYear;   // 农历年(字符)
+    StringT _strMonth;  // 农历月(字符)
+    StringT _strDay;    // 农历天(字符)
+    StringT _anm;       // 农历属相
+    StringT _socalTerm; // 二十四节气
+    StringT _ftvl;      //阴历节日
+    StringT _ftvs;      //阳历节日
+public:
+    int GetLongSecond();
+
+};
+
+using ChinaDate = ChinaDateBase<wstring>;
+
+} // namespace util
+} // namespace arklight
+
+#endif
