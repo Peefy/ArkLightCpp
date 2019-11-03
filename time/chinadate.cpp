@@ -3,7 +3,7 @@
 
 namespace arklight
 {
-namespace util
+namespace time
 {
 
 typedef wstring String;
@@ -134,9 +134,11 @@ static int leapDays(int y);
 static inline int leapMonth(int y);
 
 // 传回农历y年的总天数
-static int lYearDays(int y) {
+static int lYearDays(int y)
+{
     int i, sum = 348;
-    for (i = 0x8000; i > 0x8; i >>= 1) {
+    for (i = 0x8000; i > 0x8; i >>= 1)
+    {
         if ((lunarInfo[y - 1900] & i) != 0)
             sum += 1;
     }
@@ -144,8 +146,10 @@ static int lYearDays(int y) {
 }
 
 // 传回农历y年闰月的天数
-static int leapDays(int y) {
-    if (leapMonth(y) != 0) {
+static int leapDays(int y)
+{
+    if (leapMonth(y) != 0)
+    {
         if ((lunarInfo[y - 1900] & 0x10000) != 0)
             return 30;
         else
@@ -156,8 +160,117 @@ static int leapDays(int y) {
 }
 
 // 传回农历y年闰哪个月 1-12 , 没闰传回 0
-static inline int leapMonth(int y) {
+static inline int leapMonth(int y)
+{
     return (int)(lunarInfo[y - 1900] & 0xf);
+}
+
+// 传回农历y年m月的总天数
+static int MonthDays(const int y, const int m)
+{
+    if ((lunarInfo[y - 1900] & (0x10000 >> m)) == 0)
+        return 29;
+    else
+        return 30;
+}
+
+// 传回农历y年的生肖
+static String AnimalsYear(const int y)
+{
+    return Animals[(y - 4) % 12];
+}
+
+// 传入月日的offset 传回干支,0=甲子
+static String Cyclicalm(const int num)
+{
+    return (Gan[num % 10] + Zhi[num % 12]);
+}
+
+// 传入offset 传回干支, 0=甲子
+static String Cyclical(const int y)
+{
+    int num = y - 1900 + 36;
+    return (Cyclicalm(num));
+}
+
+// 传出农历.year0 .month1 .day2 .yearCyl3 .monCyl4 .dayCyl5 .isLeap6
+void Lunar(const int y, const int m, long nongDate[7])
+{
+    int i = 0, temp = 0, leap = 0;
+    DateTime baseDate = new DateTime(1900 + 1900, 2, 31);
+    DateTime objDate = new DateTime(y + 1900, m + 1, 1);
+    TimeSpan ts = objDate - baseDate;
+    long offset = (long)ts.TotalDays;
+    if (y < 2000)
+        offset += year19[m - 1];
+    if (y > 2000)
+        offset += year20[m - 1];
+    if (y == 2000)
+        offset += year2000[m - 1];
+    nongDate[5] = offset + 40;
+    nongDate[4] = 14;
+
+    for (i = 1900; i < 2050 && offset > 0; i++)
+    {
+        temp = LYearDays(i);
+        offset -= temp;
+        nongDate[4] += 12;
+    }
+    if (offset < 0)
+    {
+        offset += temp;
+        i--;
+        nongDate[4] -= 12;
+    }
+    nongDate[0] = i;
+    nongDate[3] = i - 1864;
+    leap = LeapMonth(i); // 闰哪个月
+    nongDate[6] = 0;
+
+    for (i = 1; i < 13 && offset > 0; i++)
+    {
+        // 闰月
+        if (leap > 0 && i == (leap + 1) && nongDate[6] == 0)
+        {
+            --i;
+            nongDate[6] = 1;
+            temp = LeapDays((int)nongDate[0]);
+        }
+        else
+        {
+            temp = MonthDays((int)nongDate[0], i);
+        }
+
+        // 解除闰月
+        if (nongDate[6] == 1 && i == (leap + 1))
+            nongDate[6] = 0;
+        offset -= temp;
+        if (nongDate[6] == 0)
+            nongDate[4]++;
+    }
+
+    if (offset == 0 && leap > 0 && i == leap + 1)
+    {
+        if (nongDate[6] == 1)
+        {
+            nongDate[6] = 0;
+        }
+        else
+        {
+            nongDate[6] = 1;
+            --i;
+            --nongDate[4];
+        }
+    }
+    if (offset < 0)
+    {
+        offset += temp;
+        --i;
+        --nongDate[4];
+    }
+    nongDate[1] = i;
+    nongDate[2] = offset + 1;
+    return nongDate;
 }
 
 template <typename StringT>

@@ -7,11 +7,12 @@
 #include <vector>
 #include <memory>
 
-#include "util/chinadate.h"
+#include "time/chinadate.h"
+#include "time/datetime.h"
 #include "platform/platform.hpp"
 
 using namespace std;
-using namespace arklight::util;
+using namespace arklight::time;
 
 int main()
 {  
@@ -36,6 +37,7 @@ int main()
     cout << "hello world" << endl;
     ChinaDate* chinadate = new ChinaDate;
     cout << chinadate->GetLongSecond() << endl;
+    DateTime t = DateTime::Now();
     getchar();
     return 0;
 }

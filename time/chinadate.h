@@ -9,7 +9,7 @@ using namespace std;
 
 namespace arklight
 {
-namespace util
+namespace time
 {
 
 template <typename StringT>
