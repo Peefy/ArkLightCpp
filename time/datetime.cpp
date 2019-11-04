@@ -67,6 +67,27 @@ private const string DateDataField = "dateData";
 
 private readonly int DaysToMonth365[13] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
 private readonly int DaysToMonth366[13] = {0,31,60,91,121,152,182,213,244,274,305,335,366};
+private readonly string DateTimeFormat[] = {"%a", "%A", "%b", "%B", "%c", "%d", "%H", "%I", "%j", "%m", "%M", "%p", "%S", "%U", "%W", "%w", "%x", "%X", "%y", "%Y", "%Z"};
+
+/// TimeSpan
+
+TimeSpan::TimeSpan(long ticks) {
+
+}
+
+TimeSpan::TimeSpan(int hours, int minutes, int seconds) {
+
+}
+
+TimeSpan::TimeSpan(int days, int hours, int minutes, int seconds) {
+
+}
+
+TimeSpan::TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds) {
+
+}
+
+/// DateTime
 
 DateTime DateTime::UtcNow() {
     long long fileTime = 0;

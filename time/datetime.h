@@ -7,8 +7,8 @@
 #if defined _MSC_VER
 #include <sysinfoapi.h>
 #else
-#include 
-#include 
+#include <iostream> 
+#include <ctime>
 #endif 
 
 using namespace std;
