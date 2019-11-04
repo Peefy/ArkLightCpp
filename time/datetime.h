@@ -73,23 +73,55 @@ public:
     bool operator >(const TimeSpan& t);
     bool operator >=(const TimeSpan& t);
 public:
-    long long Ticks;
-    int Days;
-    int Hours;
-    int Milliseconds;
-    int Minutes;
-    int Seconds;
-    double TotalDays;
-    double TotalHours;
-    double TotalMilliseconds;
-    double TotalMinutes;
-    double TotalSeconds;
+    long long Ticks() const {
+        return _ticks;
+    }
+    int Days() const {
+        return (int)(_ticks / 864000000000L);
+    }
+    int Hours() const {
+        return (int)(_ticks / 36000000000L % 24);
+    }
+    int Milliseconds() const {
+        return (int)(_ticks / 10000 % 1000);
+    }
+    int Minutes() const {
+        return (int)(_ticks / 600000000 % 60);
+    }
+    int Seconds() const {
+        return (int)(_ticks / 10000000 % 60);
+    }
+    double TotalDays() const {
+        return (double)_ticks * 1.1574074074074074E-12;
+    }
+    double TotalHours() const {
+        return (double)_ticks * 2.7777777777777777E-11;
+    }
+    double TotalMilliseconds() {
+		double num = (double)_ticks * 0.0001;
+		if (num > 922337203685477.0)
+		{
+			return 922337203685477.0;
+		}
+		if (num < -922337203685477.0)
+		{
+			return -922337203685477.0;
+		}
+		return num;
+    }
+    double TotalMinutes() {
+        return (double)_ticks * 1.6666666666666667E-09;
+    }
+    double TotalSeconds() {
+        return (double)_ticks * 1E-07;
+    }
 private:
 	long long _ticks;
     static volatile bool _legacyConfigChecked;
 	static volatile bool _legacyMode;
     static TimeSpan Interval(double value, int scale);
-    static long TimeToTicks(int hour, int minute, int second);
+    long TimeToTicks(int hour, int minute, int second);
+    double TicksToOADate(long value); 
 };
 
 struct DateTime

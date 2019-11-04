@@ -8,5 +8,6 @@ using namespace std;
 using namespace arklight::time;
 
 static void TestDataTime() {
-    cout << DateTime::Now();
+    auto nowTime = DateTime::Now();
+    cout << nowTime.Second();
 }
