@@ -14,6 +14,7 @@
         "cstdio": "cpp",
         "xstring": "cpp",
         "iosfwd": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "sstream": "cpp"
     }
 }

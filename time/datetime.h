@@ -54,7 +54,6 @@ public:
     static TimeSpan FromMinutes(const double value);
     static TimeSpan FromSeconds(const double value);
     static TimeSpan FromTicks(const long value);
-    static TimeSpan Parse(string& s);
     static int Compare(const TimeSpan& t1, const TimeSpan& t2);    
 public:
     TimeSpan Add(const TimeSpan& ts);
@@ -63,6 +62,7 @@ public:
     int CompareTo(const TimeSpan& value);
     TimeSpan Duration();
     TimeSpan Negate();
+    string ToString();
     string ToString(string& format);
     TimeSpan operator -(const TimeSpan& t);
     TimeSpan operator +(const TimeSpan& t);
@@ -121,6 +121,11 @@ private:
 	static volatile bool _legacyMode;
     static TimeSpan Interval(double value, int scale);
     long TimeToTicks(int hour, int minute, int second);
+    void judgeTicksIsMin() {
+        if (_ticks == MinValueTimeSpanTicks) {
+            throw std::exception("overflow duration");
+        }
+    }
     double TicksToOADate(long value); 
 };
 
@@ -195,7 +200,7 @@ public:
     bool operator >(const DateTime& d);
     bool operator >=(const DateTime& d);
 public:
-    int Day = 0;
+    int Day();
     int DayOfYear = 0;
     int Hour = 0;
     int Millisecond = 0;

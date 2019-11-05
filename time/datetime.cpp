@@ -1,6 +1,8 @@
 
 #include "datetime.h"
 
+#include <sstream>
+
 namespace arklight
 {
 namespace time
@@ -83,6 +85,8 @@ readonly int DaysToMonth366[13] = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 
 private
 readonly string DateTimeFormat[] = {"%a", "%A", "%b", "%B", "%c", "%d", "%H", "%I", "%j", "%m", "%M", "%p", "%S", "%U", "%W", "%w", "%x", "%X", "%y", "%Y", "%Z"};
 
+private const long MinValueTimeSpanTicks = -9223372036854775808L;
+private const long MaxValueTimeSpanTicks = 9223372036854775807L;
 /// TimeSpan
 
 TimeSpan::TimeSpan(long ticks)
@@ -117,12 +121,12 @@ TimeSpan TimeSpan::Zero()
 
 TimeSpan TimeSpan::MinValue()
 {
-    return TimeSpan(9223372036854775807L);
+    return TimeSpan(MaxValueTimeSpanTicks);
 }
 
 TimeSpan TimeSpan::MaxValue()
 {
-    return TimeSpan(-9223372036854775808L);
+    return TimeSpan(MinValueTimeSpanTicks);
 }
 
 TimeSpan TimeSpan::FromDays(const double value)
@@ -155,13 +159,17 @@ TimeSpan TimeSpan::FromTicks(const long value)
     return TimeSpan(value);
 }
 
-TimeSpan TimeSpan::Parse(string &s)
-{
-
-}
-
 int TimeSpan::Compare(const TimeSpan &t1, const TimeSpan &t2)
 {
+    if (t1._ticks > t2._ticks)
+    {
+        return 1;
+    }
+    if (t1._ticks < t2._ticks)
+    {
+        return -1;
+    }
+    return 0;
 }
 
 TimeSpan TimeSpan::Add(const TimeSpan &ts)
@@ -186,6 +194,7 @@ TimeSpan TimeSpan::Subtract(const TimeSpan &ts)
 
 bool TimeSpan::Equals(const TimeSpan &ts)
 {
+    return _ticks == ts._ticks;
 }
 
 int TimeSpan::CompareTo(const TimeSpan &value)
@@ -204,46 +213,79 @@ int TimeSpan::CompareTo(const TimeSpan &value)
 
 TimeSpan TimeSpan::Duration()
 {
+    judgeTicksIsMin();
+    return TimeSpan((_ticks >= 0) ? _ticks : (-_ticks));
 }
 
 TimeSpan TimeSpan::Negate()
 {
+    judgeTicksIsMin();
+    return TimeSpan(-_ticks);
+}
+
+string TimeSpan::ToString() {
+    int num = (int)(_ticks / TicksPerDay);
+    long num2 = _ticks % TicksPerDay;
+	if (_ticks < 0)
+	{
+		num = -num;
+		num2 = -num2;
+	}
+	int value2 = (int)(num2 / 36000000000L % 24);
+	int value3 = (int)(num2 / 600000000 % 60);
+	int value4 = (int)(num2 / 10000000 % 60);
+	int num3 = (int)(num2 % 10000000);
+	long num4 = 0L;
+	int i = 0;
+    std::stringstream ss;
+    ss << Hours() << " " << Minutes() << " " << Seconds();
+    return ss.str();
 }
 
 string TimeSpan::ToString(string &format)
 {
+    return ToString();
 }
 
 TimeSpan TimeSpan::operator-(const TimeSpan &t)
 {
+    judgeTicksIsMin();
+    return this->Subtract(t);
 }
 
 TimeSpan TimeSpan::operator+(const TimeSpan &t)
 {
+    return this->Add(t);
 }
 
 bool TimeSpan::operator==(const TimeSpan &t)
 {
+    return _ticks == t._ticks;
 }
 
 bool TimeSpan::operator!=(const TimeSpan &t)
 {
+    return _ticks != t._ticks;
 }
 
 bool TimeSpan::operator<(const TimeSpan &t)
 {
+    return _ticks < t._ticks;
 }
 
 bool TimeSpan::operator<=(const TimeSpan &t)
 {
+    return _ticks <= t._ticks;
 }
 
 bool TimeSpan::operator>(const TimeSpan &t)
 {
+    return _ticks > t._ticks;
 }
 
 bool TimeSpan::operator>=(const TimeSpan &t)
 {
+    return _ticks >= t._ticks;
 }
 
 TimeSpan TimeSpan::Interval(double value, int scale)
@@ -276,7 +318,7 @@ double TimeSpan::TicksToOADate(long value)
     {
         return 0.0;
     }
-    if (value < 864000000000L)
+    if (value < TicksPerDay)
     {
         value += 599264352000000000L;
     }
@@ -332,7 +374,7 @@ DateTime::DateTime(long ticks, DateTimeKind kind)
 
 DayOfWeek DateTime::GetDayOfWeek()
 {
-    return static_cast<DayOfWeek>((getInternalTicks() / 864000000000L + 1) % 7);
+    return static_cast<DayOfWeek>((getInternalTicks() / TicksPerDay + 1) % 7);
 }
 
 DateTime DateTime::Now()
