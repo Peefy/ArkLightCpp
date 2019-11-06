@@ -18,6 +18,9 @@ namespace arklight
 namespace time
 {
 
+typedef unsigned long long ulong;
+typedef long long slong;
+
 enum class DayOfWeek {
 	Sunday,
 	Monday,
@@ -37,7 +40,7 @@ enum class DateTimeKind {
 struct TimeSpan
 {
 public:
-    explicit TimeSpan(long ticks);
+    explicit TimeSpan(slong ticks);
     TimeSpan(int hours, int minutes, int seconds);
     TimeSpan(int days, int hours, int minutes, int seconds);
     TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds);
@@ -53,7 +56,7 @@ public:
     static TimeSpan FromMilliseconds(const double value);
     static TimeSpan FromMinutes(const double value);
     static TimeSpan FromSeconds(const double value);
-    static TimeSpan FromTicks(const long value);
+    static TimeSpan FromTicks(const slong value);
     static int Compare(const TimeSpan& t1, const TimeSpan& t2);    
 public:
     TimeSpan Add(const TimeSpan& ts);
@@ -116,25 +119,25 @@ public:
         return (double)_ticks * 1E-07;
     }
 private:
-	long long _ticks;
+	slong _ticks;
     static volatile bool _legacyConfigChecked;
 	static volatile bool _legacyMode;
     static TimeSpan Interval(double value, int scale);
-    long TimeToTicks(int hour, int minute, int second);
+    slong TimeToTicks(int hour, int minute, int second);
     void judgeTicksIsMin() {
         if (_ticks == MinValueTimeSpanTicks) {
             throw std::exception("overflow duration");
         }
     }
-    double TicksToOADate(long value); 
+    double TicksToOADate(slong value); 
 };
 
 struct DateTime
 {
 public:
-    DateTime(long ticks);
-    DateTime(unsigned long long dateData); 
-    DateTime(long ticks, DateTimeKind kind);
+    DateTime(slong ticks);
+    DateTime(ulong dateData); 
+    DateTime(slong ticks, DateTimeKind kind);
     DateTime(int year, int month, int day);
     DateTime(int year, int month, int day, int hour, int minute, int second);
     DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind);
@@ -142,7 +145,7 @@ public:
     DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind);
     virtual ~DateTime() {}
 private:
-    DateTime(long ticks, DateTimeKind kind, bool isAmbiguousDst);
+    DateTime(slong ticks, DateTimeKind kind, bool isAmbiguousDst);
     DateTime() {}
 public:
     static DateTime Now();
@@ -150,10 +153,10 @@ public:
     static DateTime Today();
     static DateTime MinValue();
     static DateTime MaxValue();
-    static DateTime FromBinary(const long dateData);
-    static DateTime FromBinaryRaw(const long dateData);
-    static DateTime FromFileTime(const long fileTime);
-    static DateTime FromFileTimeUtc(const long fileTime);
+    static DateTime FromBinary(const slong dateData);
+    static DateTime FromBinaryRaw(const slong dateData);
+    static DateTime FromFileTime(const slong fileTime);
+    static DateTime FromFileTimeUtc(const slong fileTime);
     static DateTime FromOADate(const double d);
     static DateTime Parse(const string& s);
     static DateTime SpecifyKind(const DateTime& value, const DateTimeKind& kind);
@@ -173,7 +176,7 @@ public:
     DateTime AddMinutes(double value);
     DateTime AddMonths(int months);
     DateTime AddSeconds(double value);
-    DateTime AddTicks(long value);
+    DateTime AddTicks(slong value);
     DateTime AddYears(int value);  
     TimeSpan Subtract(const DateTime& value);
     DateTime Subtract(const TimeSpan& value);
@@ -185,9 +188,9 @@ public:
     string ToShortDateString();
     string ToShortTimeString();
     double ToOADate();
-    long ToFileTime();
-    long ToFileTimeUtc();
-    long ToBinary();
+    slong ToFileTime();
+    slong ToFileTimeUtc();
+    slong ToBinary();
     int CompareTo(const DateTime& value);
     bool Equals(const DateTime value); 
     DateTime operator +(const TimeSpan& t);
@@ -201,33 +204,33 @@ public:
     bool operator >=(const DateTime& d);
 public:
     int Day();
-    int DayOfYear = 0;
-    int Hour = 0;
-    int Millisecond = 0;
-    int Minute = 0;
-    int Month = 0;
-    int Second = 0;
-    int Year = 0;
-    long long Ticks = 0;
+    int DayOfYear();
+    int Hour();
+    int Millisecond();
+    int Minute();
+    int Month();
+    int Second();
+    int Year();
+    slong Ticks();
 private:
-    unsigned long _dateData = 0;
-    inline long long getInternalTicks() const {
-        return (long long) (_dateData & 0x3FFFFFFFFFFFFFFF);
+    ulong _dateData = 0;
+    inline slong getInternalTicks() const {
+        return (slong) (_dateData & 0x3FFFFFFFFFFFFFFF);
     }
-    inline unsigned long long getInternalKind() const {
-        return (unsigned long long) (_dateData & -4611686018427387904L);
+    inline ulong getInternalKind() const {
+        return (ulong) (_dateData & -4611686018427387904L);
     }
-    long ToBinaryRaw();
-    int GetDatePart(int part);
-    void GetDatePart(int* year, int* month, int* day);
     inline bool IsAmbiguousDaylightSavingTime() const {
 		return getInternalKind() == 13835058055282163712uL;
 	}
+    slong ToBinaryRaw();
+    int GetDatePart(int part);
+    void GetDatePart(int* year, int* month, int* day);
     DateTime ToLocalTime(bool throwOnOverflow);
-    static double TicksToOADate(long value);
-    static long DateToTicks(int year, int month, int day);
-    static long TimeToTicks(int hour, int minute, int second);
-    static long DoubleDateToTicks(double value);
+    static double TicksToOADate(slong value);
+    static slong DateToTicks(int year, int month, int day);
+    static slong TimeToTicks(int hour, int minute, int second);
+    static slong DoubleDateToTicks(double value);
 };
 
 struct DateTimeEx : public DateTime
