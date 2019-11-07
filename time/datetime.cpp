@@ -13,8 +13,6 @@ namespace time
 #define internal static
 #define public
 
-
-
 static const double MillisecondsPerTick = 0.0001;
 static const double SecondsPerTick = 1E-07;
 static const double MinutesPerTick = 1.6666666666666667E-09;
@@ -46,7 +44,7 @@ static const slong MinTicks = 0L;
 static const slong MaxTicks = 3155378975999999999L;
 static const slong MaxMillis = 315537897600000L;
 static const slong FileTimeOffset = 504911232000000000L;
-static const slong DoubleDateOffset = 599264352000000000L;
+static const slong MaxSeconds = 599264352000000000L;
 static const slong OADateMinAsTicks = 31241376000000000L;
 static const double OADateMinAsDouble = -657435.0;
 static const double OADateMaxAsDouble = 2958466.0;
@@ -85,8 +83,10 @@ readonly int DaysToMonth366[13] = {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 
 private
 readonly string DateTimeFormat[] = {"%a", "%A", "%b", "%B", "%c", "%d", "%H", "%I", "%j", "%m", "%M", "%p", "%S", "%U", "%W", "%w", "%x", "%X", "%y", "%Y", "%Z"};
 
-private const slong MinValueTimeSpanTicks = -9223372036854775808L;
-private const slong MaxValueTimeSpanTicks = 9223372036854775807L;
+private
+const slong MinValueTimeSpanTicks = -9223372036854775808L;
+private
+const slong MaxValueTimeSpanTicks = 9223372036854775807L;
 /// TimeSpan
 
 TimeSpan::TimeSpan(slong ticks)
@@ -106,8 +106,8 @@ TimeSpan::TimeSpan(int days, int hours, int minutes, int seconds)
 
 TimeSpan::TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds)
 {
-    slong num = ((slong)days * 3600L * 24 + (slong)hours * 3600L + (slong)minutes * 60L + seconds) * 1000 + milliseconds;
-    if (num > 922337203685477L || num < -922337203685477L)
+    slong num = ((slong)days * 3600L * 24 + (slong)hours * 3600L + (slong)minutes * 60L + seconds) * MillisPerSecond + milliseconds;
+    if (num > MaxMilliSeconds || num < MinMilliSeconds)
     {
         throw std::exception("value our of range");
     }
@@ -131,12 +131,12 @@ TimeSpan TimeSpan::MaxValue()
 
 TimeSpan TimeSpan::FromDays(const double value)
 {
-    return Interval(value, 86400000);
+    return Interval(value, MillisPerDay);
 }
 
 TimeSpan TimeSpan::FromHours(const double value)
 {
-    return Interval(value, 3600000);
+    return Interval(value, MillisPerHour);
 }
 
 TimeSpan TimeSpan::FromMilliseconds(const double value)
@@ -146,12 +146,12 @@ TimeSpan TimeSpan::FromMilliseconds(const double value)
 
 TimeSpan TimeSpan::FromMinutes(const double value)
 {
-    return Interval(value, 60000);
+    return Interval(value, MillisPerMinute);
 }
 
 TimeSpan TimeSpan::FromSeconds(const double value)
 {
-    return Interval(value, 1000);
+    return Interval(value, MillisPerSecond);
 }
 
 TimeSpan TimeSpan::FromTicks(const slong value)
@@ -185,11 +185,11 @@ TimeSpan TimeSpan::Add(const TimeSpan &ts)
 TimeSpan TimeSpan::Subtract(const TimeSpan &ts)
 {
     slong num = _ticks - ts._ticks;
-	if (_ticks >> 63 != ts._ticks >> 63 && _ticks >> 63 != num >> 63)
-	{
-		throw std::exception("over flow");
-	}
-	return TimeSpan(num);
+    if (_ticks >> 63 != ts._ticks >> 63 && _ticks >> 63 != num >> 63)
+    {
+        throw std::exception("over flow");
+    }
+    return TimeSpan(num);
 }
 
 bool TimeSpan::Equals(const TimeSpan &ts)
@@ -200,15 +200,15 @@ bool TimeSpan::Equals(const TimeSpan &ts)
 int TimeSpan::CompareTo(const TimeSpan &value)
 {
     slong ticks = value._ticks;
-	if (_ticks > ticks)
-	{
-		return 1;
-	}
-	if (_ticks < ticks)
-	{
-	    return -1;
-	}
-	return 0;
+    if (_ticks > ticks)
+    {
+        return 1;
+    }
+    if (_ticks < ticks)
+    {
+        return -1;
+    }
+    return 0;
 }
 
 TimeSpan TimeSpan::Duration()
@@ -223,20 +223,21 @@ TimeSpan TimeSpan::Negate()
     return TimeSpan(-_ticks);
 }
 
-string TimeSpan::ToString() {
+string TimeSpan::ToString()
+{
     int num = (int)(_ticks / TicksPerDay);
     slong num2 = _ticks % TicksPerDay;
-	if (_ticks < 0)
-	{
-		num = -num;
-		num2 = -num2;
-	}
-	int value2 = (int)(num2 / 36000000000L % 24);
-	int value3 = (int)(num2 / 600000000 % 60);
-	int value4 = (int)(num2 / 10000000 % 60);
-	int num3 = (int)(num2 % 10000000);
-	slong num4 = 0L;
-	int i = 0;
+    if (_ticks < 0)
+    {
+        num = -num;
+        num2 = -num2;
+    }
+    int value2 = (int)(num2 / TicksPerHour % 24);
+    int value3 = (int)(num2 / TicksPerMinute % 60);
+    int value4 = (int)(num2 / TicksPerSecond % 60);
+    int num3 = (int)(num2 % TicksPerSecond);
+    slong num4 = 0L;
+    int i = 0;
     std::stringstream ss;
     ss << Hours() << " " << Minutes() << " " << Seconds();
     return ss.str();
@@ -290,22 +291,23 @@ bool TimeSpan::operator>=(const TimeSpan &t)
 
 TimeSpan TimeSpan::Interval(double value, int scale)
 {
-    if (isnan(value)) {
+    if (isnan(value))
+    {
         throw std::exception("value is NaN");
     }
-	double num = value * (double)scale;
-	double num2 = num + ((value >= 0.0) ? 0.5 : (-0.5));
-	if (num2 > 922337203685477.0 || num2 < -922337203685477.0)
-	{
-		throw std::exception("value is NaN");
-	}
-	return TimeSpan((long)num2 * 10000);
+    double num = value * (double)scale;
+    double num2 = num + ((value >= 0.0) ? 0.5 : (-0.5));
+    if (num2 > (double)MaxMilliSeconds || num2 < (double)MinMilliSeconds)
+    {
+        throw std::exception("value is NaN");
+    }
+    return TimeSpan((long)num2 * 10000);
 }
 
 slong TimeSpan::TimeToTicks(int hour, int minute, int second)
 {
     slong num = (slong)hour * 3600L + (slong)minute * 60L + second;
-    if (num > 922337203685L || num < -922337203685L)
+    if (num > MaxSeconds || num < MinSeconds)
     {
         throw std::exception("value our of range");
     }
@@ -320,70 +322,92 @@ double TimeSpan::TicksToOADate(slong value)
     }
     if (value < TicksPerDay)
     {
-        value += 599264352000000000L;
+        value += MaxSeconds;
     }
-    if (value < 31241376000000000L)
+    if (value < OADateMinAsTicks)
     {
         throw std::exception("value of out range");
     }
-    slong num = (value - 599264352000000000L) / 10000;
+    slong num = (value - MaxSeconds) / 10000;
     if (num < 0)
     {
-        slong num2 = num % 86400000;
+        slong num2 = num % MillisPerDay;
         if (num2 != 0L)
         {
-            num -= (86400000 + num2) * 2;
+            num -= (MillisPerDay + num2) * 2;
         }
     }
-    return (double)num / 86400000.0;
+    return (double)num / (double)MillisPerDay;
 }
 
 /// DateTime
 
-DateTime::DateTime(slong ticks) {
-        if (ticks < 0 || ticks > MaxTicks)
-    {
-        throw std::exception("ticks out of range");
-    }
+DateTime::DateTime(slong ticks)
+{
+    judgeTicks(ticks);
     _dateData = (ulong)ticks;
 }
 
-DateTime::DateTime(ulong dateData) {
+DateTime::DateTime(ulong dateData)
+{
     _dateData = dateData;
 }
 
-DateTime::DateTime(slong ticks, DateTimeKind kind) {
+DateTime::DateTime(slong ticks, DateTimeKind kind)
+{
+    judgeTicks(ticks);
     _dateData = (ulong)(ticks | (static_cast<slong>(kind) << 62));
 }
 
-DateTime::DateTime(int year, int month, int day) {
-
+DateTime::DateTime(int year, int month, int day)
+{
+    _dateData = (ulong)DateToTicks(year, month, day);
 }
 
-DateTime::DateTime(int year, int month, int day, int hour, int minute, int second) {
-
+DateTime::DateTime(int year, int month, int day, int hour, int minute, int second)
+{
+    _dateData = (ulong)(DateToTicks(year, month, day) + TimeToTicks(hour, minute, second));
 }
 
-DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind) {
-
+DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
+{
+    judgeDateTimeKind(kind);
+    long num = DateToTicks(year, month, day) + TimeToTicks(hour, minute, second);
+    _dateData = (ulong)(num | ((long)kind << 62));
 }
 
-DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond) {
-
+DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
+{
+    judgeMillisecond(millisecond);
+    _dateData = (ulong)judgeNumTicks(year, month, day, hour, minute, second, millisecond);
 }
 
-DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind) {
-
+DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind)
+{
+    judgeAllParas(year, month, day, hour, minute, second, millisecond, kind);
+    _dateData = (ulong)(judgeNumTicks(year, month, day, hour, minute, second, millisecond) | ((long)kind << 62));
 }
 
-DateTime::DateTime(slong ticks, DateTimeKind kind, bool isAmbiguousDst) {
-
+DateTime::DateTime(slong ticks, DateTimeKind kind, bool isAmbiguousDst)
+{
+    judgeTicks(ticks);
+    _dateData = (ulong)(ticks | (isAmbiguousDst ? (-TicksCeiling) : (MinValueTimeSpanTicks)));
 }
 
 DateTime DateTime::Now()
 {
     auto utcNow = UtcNow();
     bool isAmbiguousLocalDst = false;
+    slong num = utcNow.Ticks();
+    if (num > MaxTicks)
+	{
+		return DateTime(MaxTicks, DateTimeKind::Local);
+	}
+	if (num < 0)
+	{
+		return DateTime(0L, DateTimeKind::Local);
+	}
+	return DateTime(num, DateTimeKind::Local, isAmbiguousLocalDst);
 }
 
 DateTime DateTime::UtcNow()
@@ -393,62 +417,64 @@ DateTime DateTime::UtcNow()
     FILETIME t1;
     GetSystemTimeAsFileTime(&t1);
     fileTime = t1.dwHighDateTime << 32 + t1.dwLowDateTime;
-    return DateTime((ulong) (fileTime + 504911232000000000L) | 0x4000000000000000); 
+    return DateTime((ulong)(fileTime + 504911232000000000L) | 0x4000000000000000);
 #else
     return DateTime();
 #endif
 }
 
-DateTime DateTime::Today() {
-
+DateTime DateTime::Today()
+{
 }
 
-DateTime DateTime::MinValue() {
+DateTime DateTime::MinValue()
+{
     return DateTime(0L, DateTimeKind::Unspecified);
 }
 
-DateTime DateTime::MaxValue() {
+DateTime DateTime::MaxValue()
+{
     return DateTime(MaxTicks, DateTimeKind::Unspecified);
 }
 
-DateTime DateTime::FromBinary(const slong dateData) {
-
+DateTime DateTime::FromBinary(const slong dateData)
+{
 }
 
-DateTime DateTime::FromBinaryRaw(const slong dateData) {
-
+DateTime DateTime::FromBinaryRaw(const slong dateData)
+{
 }
 
-DateTime FromFileTime(const slong fileTime) {
-
+DateTime FromFileTime(const slong fileTime)
+{
 }
 
-DateTime DateTime::FromFileTimeUtc(const slong fileTime) {
-
+DateTime DateTime::FromFileTimeUtc(const slong fileTime)
+{
 }
 
-DateTime DateTime::FromOADate(const double d) {
-
+DateTime DateTime::FromOADate(const double d)
+{
 }
 
-DateTime DateTime::Parse(const string& s) {
-
+DateTime DateTime::Parse(const string &s)
+{
 }
 
-DateTime DateTime::SpecifyKind(const DateTime& value, const DateTimeKind& kind) {
-
+DateTime DateTime::SpecifyKind(const DateTime &value, const DateTimeKind &kind)
+{
 }
 
-int DateTime::Compare(const DateTime& t1, const  DateTime& t2) {
-
+int DateTime::Compare(const DateTime &t1, const DateTime &t2)
+{
 }
 
-int DateTime::DaysInMonth(const int year, const int month) {
-
+int DateTime::DaysInMonth(const int year, const int month)
+{
 }
 
-bool DateTime::IsLeapYear(const int year) {
-
+bool DateTime::IsLeapYear(const int year)
+{
 }
 
 DayOfWeek DateTime::GetDayOfWeek()
@@ -463,187 +489,187 @@ DateTimeKind DateTime::GetDateTimeKind()
     {
     case 0uL:
         return DateTimeKind::Unspecified;
-    case 4611686018427387904uL:
+    case KindUtc:
         return DateTimeKind::Utc;
     default:
         return DateTimeKind::Local;
     }
 }
 
-TimeSpan DateTime::GetTimeOfDay() {
-
+TimeSpan DateTime::GetTimeOfDay()
+{
 }
 
-DateTime DateTime::Date() {
-
+DateTime DateTime::Date()
+{
 }
 
-DateTime DateTime::Add(const TimeSpan& value) {
-
+DateTime DateTime::Add(const TimeSpan &value)
+{
 }
 
-DateTime DateTime::Add(double value, int scale) {
-
+DateTime DateTime::Add(double value, int scale)
+{
 }
 
-DateTime DateTime::AddDays(double value) {
-
+DateTime DateTime::AddDays(double value)
+{
 }
 
-DateTime DateTime::AddHours(double value) {
-
+DateTime DateTime::AddHours(double value)
+{
 }
 
-DateTime DateTime::AddMilliseconds(double value) {
-
+DateTime DateTime::AddMilliseconds(double value)
+{
 }
 
-DateTime DateTime::AddMinutes(double value) {
-
+DateTime DateTime::AddMinutes(double value)
+{
 }
 
-DateTime DateTime::AddMonths(int months) {
-
+DateTime DateTime::AddMonths(int months)
+{
 }
 
-DateTime DateTime::AddSeconds(double value) {
-
+DateTime DateTime::AddSeconds(double value)
+{
 }
 
-DateTime DateTime::AddTicks(slong value) {
-
+DateTime DateTime::AddTicks(slong value)
+{
 }
 
-DateTime DateTime::AddYears(int value) {
-
+DateTime DateTime::AddYears(int value)
+{
 }
 
-TimeSpan DateTime::Subtract(const DateTime& value) {
-
+TimeSpan DateTime::Subtract(const DateTime &value)
+{
 }
 
-DateTime DateTime::Subtract(const TimeSpan& value) {
-
+DateTime DateTime::Subtract(const TimeSpan &value)
+{
 }
 
-DateTime DateTime::ToLocalTime() {
-
+DateTime DateTime::ToLocalTime()
+{
 }
 
-DateTime DateTime::ToUniversalTime() {
-
+DateTime DateTime::ToUniversalTime()
+{
 }
 
-string DateTime::ToString() {
-
+string DateTime::ToString()
+{
 }
 
-string DateTime::ToLongDateString() {
-
+string DateTime::ToLongDateString()
+{
 }
 
-string DateTime::ToLongTimeString() {
-
+string DateTime::ToLongTimeString()
+{
 }
 
-string DateTime::ToShortDateString() {
-
+string DateTime::ToShortDateString()
+{
 }
 
-string DateTime::ToShortTimeString() {
-
+string DateTime::ToShortTimeString()
+{
 }
 
-double DateTime::ToOADate() {
-
+double DateTime::ToOADate()
+{
 }
 
-slong DateTime::ToFileTime() {
-
+slong DateTime::ToFileTime()
+{
 }
 
-slong DateTime::ToFileTimeUtc() {
-
+slong DateTime::ToFileTimeUtc()
+{
 }
 
-slong DateTime::ToBinary() {
-
+slong DateTime::ToBinary()
+{
 }
 
-int DateTime::CompareTo(const DateTime& value) {
-
+int DateTime::CompareTo(const DateTime &value)
+{
 }
 
-bool DateTime::Equals(const DateTime value) {
-
+bool DateTime::Equals(const DateTime value)
+{
 }
 
-DateTime DateTime::operator +(const TimeSpan& t) {
-
+DateTime DateTime::operator+(const TimeSpan &t)
+{
 }
 
-DateTime DateTime::operator -(const TimeSpan& t) {
-
+DateTime DateTime::operator-(const TimeSpan &t)
+{
 }
 
-DateTime DateTime::operator -(const DateTime& d) {
-
+DateTime DateTime::operator-(const DateTime &d)
+{
 }
 
-bool DateTime::operator ==(const DateTime& d) {
-
+bool DateTime::operator==(const DateTime &d)
+{
 }
 
-bool DateTime::operator !=(const DateTime& d) {
-
+bool DateTime::operator!=(const DateTime &d)
+{
 }
 
-bool DateTime::operator <(const DateTime& d) {
-
+bool DateTime::operator<(const DateTime &d)
+{
 }
 
-bool DateTime::operator <=(const DateTime& d) {
-
+bool DateTime::operator<=(const DateTime &d)
+{
 }
 
-bool DateTime::operator >(const DateTime& d) {
-
+bool DateTime::operator>(const DateTime &d)
+{
 }
 
-bool DateTime::operator >=(const DateTime& d) {
-
+bool DateTime::operator>=(const DateTime &d)
+{
 }
 
-slong DateTime::ToBinaryRaw() {
-
+slong DateTime::ToBinaryRaw()
+{
 }
 
-int DateTime::GetDatePart(int part) {
-
+int DateTime::GetDatePart(int part)
+{
 }
 
-void DateTime::GetDatePart(int* year, int* month, int* day) {
-
+void DateTime::GetDatePart(int *year, int *month, int *day)
+{
 }
 
-DateTime DateTime::ToLocalTime(bool throwOnOverflow) {
-
+DateTime DateTime::ToLocalTime(bool throwOnOverflow)
+{
 }
 
-double DateTime::TicksToOADate(slong value) {
-
+double DateTime::TicksToOADate(slong value)
+{
 }
 
-slong DateTime::DateToTicks(int year, int month, int day) {
-
+slong DateTime::DateToTicks(int year, int month, int day)
+{
 }
 
-slong DateTime::TimeToTicks(int hour, int minute, int second) {
-
+slong DateTime::TimeToTicks(int hour, int minute, int second)
+{
 }
 
-slong DateTime::DoubleDateToTicks(double value) {
-
+slong DateTime::DoubleDateToTicks(double value)
+{
 }
 
 } // namespace time

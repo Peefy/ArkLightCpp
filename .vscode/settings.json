@@ -15,6 +15,7 @@
         "xstring": "cpp",
         "iosfwd": "cpp",
         "xutility": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "chrono": "cpp"
     }
 }

@@ -11,6 +11,9 @@
 #include <ctime>
 #endif 
 
+#include <chrono>
+#include <thread>
+
 using namespace std;
 
 namespace arklight
@@ -76,7 +79,7 @@ public:
     bool operator >(const TimeSpan& t);
     bool operator >=(const TimeSpan& t);
 public:
-    long long Ticks() const {
+    slong Ticks() const {
         return _ticks;
     }
     int Days() const {
@@ -130,6 +133,11 @@ private:
         }
     }
     double TicksToOADate(slong value); 
+};
+
+struct TimeZone
+{
+
 };
 
 struct DateTime
@@ -223,6 +231,38 @@ private:
     inline bool IsAmbiguousDaylightSavingTime() const {
 		return getInternalKind() == 13835058055282163712uL;
 	}
+    void judgeMillisecond(int& millisecond) {
+        if (millisecond < 0 || millisecond >= 1000)
+	    {
+		    throw std::exception("millisecond ArgumentOutOfRange_Range");
+	    }
+    }
+    void judgeDateTimeKind(DateTimeKind& kind) {
+        if (kind < DateTimeKind::Unspecified || kind > DateTimeKind::Local)
+	    {
+		    throw std::exception("Argument_InvalidDateTimeKind"); 
+	    }
+    }
+    slong judgeNumTicks(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond) {
+        slong num = DateToTicks(year, month, day) + TimeToTicks(hour, minute, second);
+	    num += (slong)millisecond * 10000L;
+	    if (num < 0 || num > MaxTicks)
+	    {
+            throw std::exception("Arg_DateTimeRange");
+	    }
+        return num;
+    }
+    void judgeTicks(slong& ticks) {
+        if (ticks < 0 || ticks > MaxTicks)
+	    {
+            throw std::exception("ArgumentOutOfRange_DateTimeBadTicks");
+	    }
+    }
+    void judgeAllParas(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond, DateTimeKind& kind){
+        judgeMillisecond(millisecond);
+        judgeDateTimeKind(kind);
+        judgeNumTicks(year, month, day, hour, minute, second, millisecond);
+    }
     slong ToBinaryRaw();
     int GetDatePart(int part);
     void GetDatePart(int* year, int* month, int* day);
