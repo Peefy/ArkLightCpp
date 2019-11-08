@@ -1,6 +1,7 @@
 
 #include <string>
 #include "../core/basic.h"
+#include "./osplatformutil.h"
 
 enum class Platform
 {
@@ -9,7 +10,10 @@ enum class Platform
     Linux = 2,
     MacOS = 3,
     Android = 4,
-    iOS = 5
+    iOS = 5,
+    FreeBSD = 6, 
+    OpenBSD = 7,
+    Sun = 8
 };
 
 inline Platform GetPlatfom() {
