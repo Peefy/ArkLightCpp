@@ -8,11 +8,12 @@
 #include <map>
 #include <memory>
 
-#include "util/chinadate.h"
+#include "time/chinadate.h"
+#include "time/datetime.h"
+#include "platform/platform.hpp"
 
 using namespace std;
-
-using namespace util;
+using namespace arklight::time;
 
 int main()
 {  
@@ -28,6 +29,9 @@ int main()
     cout << endl;
     cout << "hello world" << endl;
     cout << "hello world" << endl;
+    ChinaDate* chinadate = new ChinaDate;
+    cout << chinadate->GetLongSecond() << endl;
+    DateTime t = DateTime::Now();
     getchar();
     return 0;
 }

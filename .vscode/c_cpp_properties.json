@@ -47,7 +47,10 @@
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            }
+            },
+            "compilerPath": "D:/VS2019/VC/Tools/MSVC/14.20.27508/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
         },
         {
             "name": "Win32",
@@ -81,7 +84,8 @@
                 "databaseFilename": ""
             },
             "cStandard": "c11",
-            "cppStandard": "c++17"
+            "cppStandard": "c++17",
+            "compilerPath": "D:/VS2019/VC/Tools/MSVC/14.20.27508/bin/Hostx64/x64/cl.exe"
         }
     ],
     "version": 4
