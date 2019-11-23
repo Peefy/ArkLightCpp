@@ -3,7 +3,7 @@
 
 namespace arklight
 {
-namespace time
+namespace datetime
 {
 
 typedef wstring String;

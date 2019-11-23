@@ -1,6 +1,6 @@
 
-#ifndef __CHINA_DATE_H
-#define __CHINA_DATE_H
+#ifndef __CHINA_DATE_H__
+#define __CHINA_DATE_H__
 
 #include <string>
 #include <ctime>
@@ -11,7 +11,7 @@ using namespace std;
 
 namespace arklight
 {
-namespace time
+namespace datetime
 {
 
 template <typename StringT>
