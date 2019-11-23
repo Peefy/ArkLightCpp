@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <map>
 #include <memory>
 
 #include "time/datetime.h"
@@ -21,14 +22,7 @@ int main()
     nums.push_back(2);
     nums.push_back(3);
     nums.push_back(4);
-    for(auto num : nums)
-    {
-        cout << num << " ";
-    }
-    std::cout << [](float f) -> int { return std::abs(f); } (-3.5);
-    auto lambda = [] (float val) -> int { return val * 100; };
     float f0 = 1.0;
-    std::cout << [=](float f) mutable { return f0 += std::abs(f); } (-3.5);
     std::cout << '\n' << f0 << '\n';
     cout << "hello world" << endl;
     DateTime t = DateTime::UtcNow();
