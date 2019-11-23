@@ -5,6 +5,8 @@
 #include <string>
 #include <ctime>
 
+#include "datetime.h"
+
 using namespace std;
 
 namespace arklight

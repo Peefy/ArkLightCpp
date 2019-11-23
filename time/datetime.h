@@ -11,18 +11,15 @@
 #include <ctime>
 #endif 
 
-#include <chrono>
-#include <thread>
-
 using namespace std;
+
+typedef unsigned long long ulong;
+typedef long long slong;
 
 namespace arklight
 {
 namespace time
 {
-
-typedef unsigned long long ulong;
-typedef long long slong;
 
 enum class DayOfWeek {
 	Sunday,
@@ -60,7 +57,8 @@ public:
     static TimeSpan FromMinutes(const double value);
     static TimeSpan FromSeconds(const double value);
     static TimeSpan FromTicks(const slong value);
-    static int Compare(const TimeSpan& t1, const TimeSpan& t2);    
+    static int Compare(const TimeSpan& t1, const TimeSpan& t2);  
+    static slong TimeToTicks(int hour, int minute, int second);  
 public:
     TimeSpan Add(const TimeSpan& ts);
     TimeSpan Subtract(const TimeSpan& ts);
@@ -79,65 +77,47 @@ public:
     bool operator >(const TimeSpan& t);
     bool operator >=(const TimeSpan& t);
 public:
-    slong Ticks() const {
-        return _ticks;
-    }
-    int Days() const {
-        return (int)(_ticks / 864000000000L);
-    }
-    int Hours() const {
-        return (int)(_ticks / 36000000000L % 24);
-    }
-    int Milliseconds() const {
-        return (int)(_ticks / 10000 % 1000);
-    }
-    int Minutes() const {
-        return (int)(_ticks / 600000000 % 60);
-    }
-    int Seconds() const {
-        return (int)(_ticks / 10000000 % 60);
-    }
-    double TotalDays() const {
-        return (double)_ticks * 1.1574074074074074E-12;
-    }
-    double TotalHours() const {
-        return (double)_ticks * 2.7777777777777777E-11;
-    }
-    double TotalMilliseconds() {
-		double num = (double)_ticks * 0.0001;
-		if (num > 922337203685477.0)
-		{
-			return 922337203685477.0;
-		}
-		if (num < -922337203685477.0)
-		{
-			return -922337203685477.0;
-		}
-		return num;
-    }
-    double TotalMinutes() {
-        return (double)_ticks * 1.6666666666666667E-09;
-    }
-    double TotalSeconds() {
-        return (double)_ticks * 1E-07;
-    }
+    slong Ticks() const;
+    int Days() const;
+    int Hours() const;
+    int Milliseconds() const;
+    int Minutes() const;
+    int Seconds() const;
+    double TotalDays() const;
+    double TotalHours() const;
+    double TotalMilliseconds() const;
+    double TotalMinutes() const;
+    double TotalSeconds() const;
 private:
 	slong _ticks;
     static volatile bool _legacyConfigChecked;
 	static volatile bool _legacyMode;
-    static TimeSpan Interval(double value, int scale);
-    slong TimeToTicks(int hour, int minute, int second);
-    void judgeTicksIsMin() {
-        if (_ticks == MinValueTimeSpanTicks) {
-            throw std::exception("overflow duration");
-        }
-    }
+    static TimeSpan Interval(double value, int scale); 
+    void judgeTicksIsMin();
     double TicksToOADate(slong value); 
 };
 
 struct TimeZone
 {
 
+};
+
+class TimeZoneInfo
+{
+    enum TimeZoneInfoResult
+    {
+        Success,
+		TimeZoneNotFoundException,
+		InvalidTimeZoneException,
+		SecurityException
+    };
+};
+
+class DateTimeFormat
+{
+private:
+	string RoundtripFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK";
+	string RoundtripDateTimeUnfixed = "yyyy'-'MM'-'ddTHH':'mm':'ss zzz";
 };
 
 struct DateTime
@@ -200,10 +180,10 @@ public:
     slong ToFileTimeUtc();
     slong ToBinary();
     int CompareTo(const DateTime& value);
-    bool Equals(const DateTime value); 
+    bool Equals(const DateTime& value); 
     DateTime operator +(const TimeSpan& t);
     DateTime operator -(const TimeSpan& t);
-    DateTime operator -(const DateTime& d);
+    TimeSpan operator -(const DateTime& d);
     bool operator ==(const DateTime& d);
     bool operator !=(const DateTime& d);
     bool operator <(const DateTime& d);
@@ -222,47 +202,14 @@ public:
     slong Ticks();
 private:
     ulong _dateData = 0;
-    inline slong getInternalTicks() const {
-        return (slong) (_dateData & 0x3FFFFFFFFFFFFFFF);
-    }
-    inline ulong getInternalKind() const {
-        return (ulong) (_dateData & -4611686018427387904L);
-    }
-    inline bool IsAmbiguousDaylightSavingTime() const {
-		return getInternalKind() == 13835058055282163712uL;
-	}
-    void judgeMillisecond(int& millisecond) {
-        if (millisecond < 0 || millisecond >= 1000)
-	    {
-		    throw std::exception("millisecond ArgumentOutOfRange_Range");
-	    }
-    }
-    void judgeDateTimeKind(DateTimeKind& kind) {
-        if (kind < DateTimeKind::Unspecified || kind > DateTimeKind::Local)
-	    {
-		    throw std::exception("Argument_InvalidDateTimeKind"); 
-	    }
-    }
-    slong judgeNumTicks(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond) {
-        slong num = DateToTicks(year, month, day) + TimeToTicks(hour, minute, second);
-	    num += (slong)millisecond * 10000L;
-	    if (num < 0 || num > MaxTicks)
-	    {
-            throw std::exception("Arg_DateTimeRange");
-	    }
-        return num;
-    }
-    void judgeTicks(slong& ticks) {
-        if (ticks < 0 || ticks > MaxTicks)
-	    {
-            throw std::exception("ArgumentOutOfRange_DateTimeBadTicks");
-	    }
-    }
-    void judgeAllParas(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond, DateTimeKind& kind){
-        judgeMillisecond(millisecond);
-        judgeDateTimeKind(kind);
-        judgeNumTicks(year, month, day, hour, minute, second, millisecond);
-    }
+    inline slong getInternalTicks() const;
+    inline ulong getInternalKind() const;
+    inline bool IsAmbiguousDaylightSavingTime() const;
+    void judgeMillisecond(int& millisecond);
+    void judgeDateTimeKind(DateTimeKind& kind);
+    slong judgeNumTicks(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond);
+    void judgeTicks(slong& ticks);
+    void judgeAllParas(int& year, int& month, int& day, int& hour, int& minute, int& second, int& millisecond, DateTimeKind& kind);
     slong ToBinaryRaw();
     int GetDatePart(int part);
     void GetDatePart(int* year, int* month, int* day);
@@ -273,11 +220,19 @@ private:
     static slong DoubleDateToTicks(double value);
 };
 
+template<typename _strT>
 struct DateTimeEx : public DateTime
 {
-    
+public:
+    using str_type = _strT;
+
+    str_type ToExString() {
+        return NULL;
+    }
+
 };
 
+using DateTimeExString = DateTimeEx<std::string>;
 
 }
 }

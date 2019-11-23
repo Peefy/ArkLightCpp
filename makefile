@@ -2,6 +2,8 @@
 CC=g++
 #定义变量srcs，表示需要编译的源文件，需要表明路径，如果直接写表示这些cpp文件和makefile在同一个目录下，如果有多个源文件，每行以\结尾
 SRCS=./main.cpp\
+./time/datetime.cpp\
+./platform/platform.hpp\
 #定义变量OBJS,表示将原文件中所有以.cpp结尾的文件替换成以.o结尾，即将.cpp源文件编译成.o文件
 OBJS=$(SRCS:.cpp=.o)
 

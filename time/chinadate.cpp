@@ -197,9 +197,9 @@ static String Cyclical(const int y)
 void Lunar(const int y, const int m, long nongDate[7])
 {
     int i = 0, temp = 0, leap = 0;
-    DateTime baseDate = new DateTime(1900 + 1900, 2, 31);
-    DateTime objDate = new DateTime(y + 1900, m + 1, 1);
-    TimeSpan ts = objDate - baseDate;
+    DateTime baseDate = DateTime(1900 + 1900, 2, 31);
+    DateTime objDate = DateTime(y + 1900, m + 1, 1);
+    TimeSpan ts = (objDate - baseDate);
     long offset = (long)ts.TotalDays;
     if (y < 2000)
         offset += year19[m - 1];
