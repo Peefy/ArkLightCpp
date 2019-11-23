@@ -25,8 +25,7 @@ int main()
     float f0 = 1.0;
     std::cout << '\n' << f0 << '\n';
     cout << "hello world" << endl;
-    DateTime t = DateTime::UtcNow();
-    cout << t.Ticks() << endl;
+    cout << DateTime::UtcNow().ToString() << endl;
     return 0;
 }
 

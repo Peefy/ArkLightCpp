@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{EA9D9CBD-676E-42A2-97C3-20C4F60E6308}</ProjectGuid>
+    <ProjectGuid>{409EBDC7-64B4-42CC-9288-733EDD823712}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ArkLightCppVsSolution</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -151,7 +151,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\time\datetime.cpp" />
     <ClCompile Include="ArkLightCppVsSolution.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\time\datetime.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

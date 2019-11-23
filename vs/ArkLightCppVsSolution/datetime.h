@@ -5,7 +5,7 @@
 #include <string>
 
 #if defined _MSC_VER
-#include <Windows.h>
+#include <sysinfoapi.h>
 #else
 #include <iostream> 
 #include <ctime>

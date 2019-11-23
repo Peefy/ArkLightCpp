@@ -502,10 +502,10 @@ DateTime DateTime::UtcNow()
 #if defined _MSC_VER
     FILETIME t1;
     GetSystemTimeAsFileTime(&t1);
-    fileTime = (((slong)t1.dwHighDateTime) << 32) + t1.dwLowDateTime;
+    fileTime = t1.dwHighDateTime << 32 + t1.dwLowDateTime;
     return DateTime((ulong)(fileTime + FileTimeOffset) | 0x4000000000000000);
 #else
-    return DateTime((slong)637100921071785398);
+    return DateTime();
 #endif
 }
 
@@ -928,8 +928,8 @@ DateTime DateTime::operator+(const TimeSpan &t)
 
 DateTime DateTime::operator-(const TimeSpan &t)
 {
-    slong internalTicks = getInternalTicks();
-    slong ticks = t.Ticks();
+    long internalTicks = getInternalTicks();
+    long ticks = t.Ticks();
     if (internalTicks - 0 < ticks || internalTicks - MaxTicks > ticks)
     {
         throw; 
@@ -1025,7 +1025,7 @@ slong DateTime::ToBinaryRaw()
 
 int DateTime::GetDatePart(int part)
 {
-    slong internalTicks = getInternalTicks();
+    long internalTicks = getInternalTicks();
     int num = (int)(internalTicks / TicksPerDay);
     int num2 = num / 146097;
     num -= num2 * 146097;
@@ -1065,7 +1065,7 @@ int DateTime::GetDatePart(int part)
 
 void DateTime::GetDatePart(int *year, int *month, int *day)
 {
-    slong internalTicks = getInternalTicks();
+    long internalTicks = getInternalTicks();
     int num = (int)(internalTicks / TicksPerDay);
     int num2 = num / 146097;
     num -= num2 * 146097;
@@ -1108,10 +1108,10 @@ double DateTime::TicksToOADate(slong value)
         throw; 
         // new OverflowException(Environment.GetResourceString("Arg_OleAutDateInvalid"));
     }
-    slong num = (value - 599264352000000000L) / 10000;
+    long num = (value - 599264352000000000L) / 10000;
     if (num < 0)
     {
-        slong num2 = num % MillisPerDay;
+        long num2 = num % MillisPerDay;
         if (num2 != 0L)
         {
             num -= (MillisPerDay + num2) * 2;
@@ -1153,7 +1153,7 @@ slong DateTime::DoubleDateToTicks(double value)
         throw; 
         // new ArgumentException(Environment.GetResourceString("Arg_OleAutDateInvalid"));
     }
-    slong num = (long)(value * (double)MillisPerDay + ((value >= 0.0) ? 0.5 : (-0.5)));
+    long num = (long)(value * (double)MillisPerDay + ((value >= 0.0) ? 0.5 : (-0.5)));
     if (num < 0)
     {
         num -= num % MillisPerDay * 2;
