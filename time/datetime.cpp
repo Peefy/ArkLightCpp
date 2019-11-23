@@ -5,7 +5,7 @@
 
 namespace arklight
 {
-namespace time
+namespace datetime
 {
 
 #define readonly const
@@ -118,7 +118,6 @@ TimeSpan::TimeSpan(int days, int hours, int minutes, int seconds, int millisecon
     slong num = ((slong)days * 3600L * 24 + (slong)hours * 3600L + (slong)minutes * 60L + seconds) * MillisPerSecond + milliseconds;
     if (num > MaxMilliSeconds || num < MinMilliSeconds)
     {
-        // throw std::exception();
         throw;
     }
     _ticks = num * TicksPerMillisecond;
@@ -375,14 +374,12 @@ TimeSpan TimeSpan::Interval(double value, int scale)
 {
     if ((slong)value == 0xFFFFFFFFFFFFFFFF)
     {
-        // throw std::exception("value is NaN");
         throw;
     }
     double num = value * (double)scale;
     double num2 = num + ((value >= 0.0) ? 0.5 : (-0.5));
     if (num2 > (double)MaxMilliSeconds || num2 < (double)MinMilliSeconds)
     {
-        // throw std::exception("value is NaN");
         throw;
     }
     return TimeSpan((slong)num2 * 10000);
@@ -393,7 +390,6 @@ slong TimeSpan::TimeToTicks(int hour, int minute, int second)
     slong num = (slong)hour * 3600L + (slong)minute * 60L + second;
     if (num > MaxSeconds || num < MinSeconds)
     {
-        // throw std::exception("value our of range");
         throw;
     }
     return num * TicksPerSecond;
@@ -411,7 +407,6 @@ double TimeSpan::TicksToOADate(slong value)
     }
     if (value < OADateMinAsTicks)
     {
-        // throw std::exception("value of out range");
         throw;
     }
     slong num = (value - MaxSeconds) / 10000;
@@ -482,30 +477,35 @@ DateTime::DateTime(slong ticks, DateTimeKind kind, bool isAmbiguousDst)
 
 DateTime DateTime::Now()
 {
-    auto utcNow = UtcNow();
-    bool isAmbiguousLocalDst = false;
-    slong num = utcNow.Ticks();
-    if (num > MaxTicks)
-    {
-        return DateTime(MaxTicks, DateTimeKind::Local);
-    }
-    if (num < 0)
-    {
-        return DateTime(0L, DateTimeKind::Local);
-    }
-    return DateTime(num, DateTimeKind::Local, isAmbiguousLocalDst);
+#if defined _MSC_VER
+	slong fileTime = 0;
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	return DateTime(st.wYear, st.wMonth, st.wDay,
+		st.wHour, st.wMinute, st.wSecond, DateTimeKind::Local);
+#else
+    time_t tt;
+    tt = time( &tt );
+    tm* t= localtime(&tt);
+    return DateTime(t->tm_year + 1900, t->tm_mon + 1,  t->tm_mday, 
+        t->tm_hour, t->tm_min, t->tm_sec, DateTimeKind::Local);
+#endif
 }
 
 DateTime DateTime::UtcNow()
 {
-    slong fileTime = 0;
 #if defined _MSC_VER
+    slong fileTime = 0;
     FILETIME t1;
     GetSystemTimeAsFileTime(&t1);
     fileTime = (((slong)t1.dwHighDateTime) << 32) + t1.dwLowDateTime;
-    return DateTime((ulong)(fileTime + FileTimeOffset) | 0x4000000000000000);
+    return DateTime((ulong)(fileTime + FileTimeOffset) | 0x4000000000000000, DateTimeKind::Utc);
 #else
-    return DateTime((slong)637100921071785398);
+    time_t tt;
+    tt = time( &tt );
+    tm* t= gmtime(&tt);
+    return DateTime(t->tm_year + 1900, t->tm_mon + 1,  t->tm_mday, 
+        t->tm_hour, t->tm_min, t->tm_sec, DateTimeKind::Utc);
 #endif
 }
 
@@ -537,17 +537,17 @@ DateTime DateTime::FromBinary(const slong dateData)
         slong ticks = 0;
         if (num < 0)
         {
-            //ticks = TimeZoneInfo.GetLocalUtcOffset(MinValue, TimeZoneInfoOptions.NoThrowOnInvalidTime).Ticks;
+            //ticks = TimeZoneInfo::GetLocalUtcOffset(MinValue, TimeZoneInfoOptions::NoThrowOnInvalidTime).Ticks;
         }
         else if (num > MaxTicks)
         {
-            // ticks = TimeZoneInfo.GetLocalUtcOffset(MaxValue, TimeZoneInfoOptions.NoThrowOnInvalidTime).Ticks;
+            // ticks = TimeZoneInfo::GetLocalUtcOffset(MaxValue, TimeZoneInfoOptions::NoThrowOnInvalidTime).Ticks;
         }
         else
         {
             DateTime time = DateTime(num, DateTimeKind::Utc);
             bool isDaylightSavings = false;
-            // ticks = TimeZoneInfo.GetUtcOffsetFromUtc(time, TimeZoneInfo.Local, out isDaylightSavings, out isAmbiguousLocalDst).Ticks;
+            // ticks = TimeZoneInfo::GetUtcOffsetFromUtc(time, TimeZoneInfo.Local, &isDaylightSavings, &isAmbiguousLocalDst).Ticks;
         }
         num += ticks;
         if (num < 0)
@@ -556,7 +556,6 @@ DateTime DateTime::FromBinary(const slong dateData)
         }
         if (num < 0 || num > MaxTicks)
         {
-            // throw std::exception("Argument_DateTimeBadBinaryData");
             throw;
         }
         return DateTime(num, DateTimeKind::Local, isAmbiguousLocalDst);
@@ -578,7 +577,6 @@ DateTime DateTime::FromFileTimeUtc(const slong fileTime)
 {
     if (fileTime < 0 || fileTime > 2650467743999999999L)
     {
-        // throw std::exception("invalid fileTime");
         throw;
     }
     slong ticks = fileTime + FileTimeOffset;
@@ -620,7 +618,6 @@ int DateTime::DaysInMonth(const int year, const int month)
 {
     if (month < 1 || month > 12)
     {
-        // throw std::exception("invalid month");
         throw;
     }
     auto isleapyear = IsLeapYear(year);
@@ -638,7 +635,6 @@ bool DateTime::IsLeapYear(const int year)
 {
     if (year < 1 || year > 9999)
     {
-        // throw std::exception("invalid year");
         throw;
     }
     if (year % 4 == 0)
@@ -650,6 +646,19 @@ bool DateTime::IsLeapYear(const int year)
         return true;
     }
     return false;
+}
+
+Time DateTime::GetTime()
+{
+    Time _rtime;
+    _rtime.Year = Year();
+    _rtime.Month = Month();
+    _rtime.Day = Day();
+    _rtime.Hour = Hour();
+    _rtime.Minute = Minute();
+    _rtime.Second = Second();
+    _rtime.Millisecond = Millisecond();
+    return _rtime;
 }
 
 DayOfWeek DateTime::GetDayOfWeek()
@@ -692,7 +701,6 @@ DateTime DateTime::Add(double value, int scale)
     slong num = (slong)(value * (double)scale + ((value >= 0.0) ? 0.5 : (-0.5)));
     if (num <= -MaxMillis || num >= MaxMillis)
     {
-        // throw std::exception("invalid value");
         throw;
     }
     return AddTicks(num * 10000);
@@ -723,7 +731,6 @@ DateTime DateTime::AddMonths(int months)
     int year = 0, month = 0, day = 0;
     if (months < -120000 || months > 120000)
     {
-        // throw std::exception("invalid months");
         throw;
     }
     GetDatePart(&year, &month, &day);
@@ -740,7 +747,6 @@ DateTime DateTime::AddMonths(int months)
     }
     if (year < 1 || year > 9999)
     {
-        // throw std::exception("invalid year");
         throw;
     }
     int num2 = DaysInMonth(year, month);
@@ -761,7 +767,6 @@ DateTime DateTime::AddTicks(slong value)
     slong internalTicks = getInternalTicks();
     if (value > MaxTicks - internalTicks || value < -internalTicks)
     {
-        // throw std::exception("invalid value");
         throw;
     }
     return DateTime((ulong)((internalTicks + value) | (slong)getInternalKind()));
@@ -771,7 +776,6 @@ DateTime DateTime::AddYears(int value)
 {
     if (value < -10000 || value > 10000)
     {
-        // throw std::exception("invalid yaer");
         throw;
     }
     return AddMonths(value * 12);
@@ -788,7 +792,6 @@ DateTime DateTime::Subtract(const TimeSpan &value)
     slong ticks = value.Ticks();
     if (internalTicks - 0 < ticks || internalTicks - MaxTicks > ticks)
     {
-        // throw std::exception("invalid value");
         throw;
     }
     return DateTime((ulong)((internalTicks - ticks) | (slong)getInternalTicks()));
@@ -813,7 +816,6 @@ DateTime DateTime::ToLocalTime(bool throwOnOverflow)
     {
         if (throwOnOverflow)
         {
-            // throw std::exception("out of range");
             throw;
         }
         return DateTime(MaxTicks, DateTimeKind::Local);
@@ -822,7 +824,6 @@ DateTime DateTime::ToLocalTime(bool throwOnOverflow)
     {
         if (throwOnOverflow)
         {
-            // throw std::exception("out of range");
             throw;
         }
         return DateTime(0L, DateTimeKind::Local);
@@ -839,7 +840,7 @@ DateTime DateTime::ToUniversalTime()
 string DateTime::ToString()
 {
     std::stringstream ss;
-    ss << Year() << Month() << Day() << Hour() << Minute() << Millisecond();
+    ss << Year() << "-" << Month() << "-" << Day() << "-" << Hour() << "-" << Minute() << "-" << Second();
     return ss.str();
     // return DateTimeFormat::Format(this, nullptr, DateTimeFormatInfo::CurrentInfo);
 }
@@ -881,7 +882,7 @@ slong DateTime::ToFileTime()
 slong DateTime::ToFileTimeUtc()
 {
     slong num = (((slong)getInternalKind() & -9223372036854775807L) != 0L) ? ToUniversalTime().getInternalTicks() : getInternalTicks();
-    num -= 504911232000000000L;
+    num -= FileTimeOffset;
     if (num < 0)
     {
         throw;
@@ -921,7 +922,6 @@ DateTime DateTime::operator+(const TimeSpan &t)
     if (ticks > MaxTicks - internalTicks || ticks < -internalTicks)
     {
         throw;
-        // new ArgumentOutOfRangeException("t", Environment.GetResourceString("ArgumentOutOfRange_DateArithmetic"));
     }
     return DateTime((ulong)((internalTicks + ticks) | (slong)getInternalKind()));
 }
@@ -933,7 +933,6 @@ DateTime DateTime::operator-(const TimeSpan &t)
     if (internalTicks - 0 < ticks || internalTicks - MaxTicks > ticks)
     {
         throw; 
-        // new ArgumentOutOfRangeException("t", Environment.GetResourceString("ArgumentOutOfRange_DateArithmetic"));
     }
     return DateTime((ulong)((internalTicks - ticks) | (slong)getInternalKind()));
 }
@@ -1106,7 +1105,6 @@ double DateTime::TicksToOADate(slong value)
     if (value < OADateMinAsTicks)
     {
         throw; 
-        // new OverflowException(Environment.GetResourceString("Arg_OleAutDateInvalid"));
     }
     slong num = (value - 599264352000000000L) / 10000;
     if (num < 0)
@@ -1133,7 +1131,6 @@ slong DateTime::DateToTicks(int year, int month, int day)
         }
     }
     throw; 
-    // new ArgumentOutOfRangeException(null, Environment.GetResourceString("ArgumentOutOfRange_BadYearMonthDay"));
 }
 
 slong DateTime::TimeToTicks(int hour, int minute, int second)
@@ -1143,7 +1140,6 @@ slong DateTime::TimeToTicks(int hour, int minute, int second)
 		return TimeSpan::TimeToTicks(hour, minute, second);
 	}
 	throw; 
-    // new ArgumentOutOfRangeException(null, Environment.GetResourceString("ArgumentOutOfRange_BadHourMinuteSecond"));
 }
 
 slong DateTime::DoubleDateToTicks(double value)
@@ -1151,7 +1147,6 @@ slong DateTime::DoubleDateToTicks(double value)
     if (!(value < 2958466.0) || !(value > -657435.0))
     {
         throw; 
-        // new ArgumentException(Environment.GetResourceString("Arg_OleAutDateInvalid"));
     }
     slong num = (long)(value * (double)MillisPerDay + ((value >= 0.0) ? 0.5 : (-0.5)));
     if (num < 0)
@@ -1162,7 +1157,6 @@ slong DateTime::DoubleDateToTicks(double value)
     if (num < 0 || num >= 315537897600000L)
     {
         throw; 
-        // new ArgumentException(Environment.GetResourceString("Arg_OleAutDateScale"));
     }
     return num * 10000;
 }
@@ -1186,7 +1180,6 @@ void DateTime::judgeMillisecond(int &millisecond)
 {
     if (millisecond < 0 || millisecond >= 1000)
     {
-        // throw std::exception("millisecond ArgumentOutOfRange_Range");
         throw;
     }
 }
@@ -1194,7 +1187,6 @@ void DateTime::judgeDateTimeKind(DateTimeKind &kind)
 {
     if (kind < DateTimeKind::Unspecified || kind > DateTimeKind::Local)
     {
-        // throw std::exception("Argument_InvalidDateTimeKind");
         throw;
     }
 }
@@ -1204,7 +1196,6 @@ slong DateTime::judgeNumTicks(int &year, int &month, int &day, int &hour, int &m
     num += (slong)millisecond * 10000L;
     if (num < 0 || num > MaxTicks)
     {
-        // throw std::exception("Arg_DateTimeRange");
         throw;
     }
     return num;
@@ -1213,7 +1204,6 @@ void DateTime::judgeTicks(slong &ticks)
 {
     if (ticks < 0 || ticks > MaxTicks)
     {
-        // throw std::exception("ArgumentOutOfRange_DateTimeBadTicks");
         throw;
     }
 }
@@ -1224,5 +1214,5 @@ void DateTime::judgeAllParas(int &year, int &month, int &day, int &hour, int &mi
     judgeNumTicks(year, month, day, hour, minute, second, millisecond);
 }
 
-} // namespace time
+} // namespace datetime
 } // namespace arklight

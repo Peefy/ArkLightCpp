@@ -43,6 +43,8 @@
         "xiosbase": "cpp",
         "xlocale": "cpp",
         "xlocinfo": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "map": "cpp",
+        "xtree": "cpp"
     }
 }

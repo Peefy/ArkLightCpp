@@ -3,14 +3,15 @@
 
 #include "../../time/datetime.h"
 
-using namespace arklight::time;
+using namespace arklight::datetime;
 
 int main()
 {
     std::cout << "Hello World!\n"; 
-	cout << DateTime::UtcNow().Ticks() << endl;
+	auto time = DateTime::Now();
+	cout << time.ToString() << endl;
 	getchar();
-	return -1;
+	return 0;
 }
 
 

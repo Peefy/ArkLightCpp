@@ -2,13 +2,14 @@
 #ifndef __DATE_TIME_H
 #define __DATE_TIME_H
 
+#include <iostream> 
 #include <string>
 
 #if defined _MSC_VER
 #include <Windows.h>
+#include <time.h>
 #else
-#include <iostream> 
-#include <ctime>
+#include <time.h>
 #endif 
 
 using namespace std;
@@ -18,7 +19,7 @@ typedef long long slong;
 
 namespace arklight
 {
-namespace time
+namespace datetime
 {
 
 enum class DayOfWeek {
@@ -37,6 +38,17 @@ enum class DateTimeKind {
 	Local
 };
 
+struct Time
+{
+    int Year;
+    int Month;
+    int Day;
+    int Hour;
+    int Minute;
+    int Second; 
+    int Millisecond;
+};
+
 struct TimeSpan
 {
 public:
@@ -45,8 +57,6 @@ public:
     TimeSpan(int days, int hours, int minutes, int seconds);
     TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds);
     virtual ~TimeSpan() {}
-private:
-    TimeSpan() {}
 public:
     static TimeSpan Zero();
     static TimeSpan MinValue();
@@ -152,6 +162,7 @@ public:
     static int DaysInMonth(const int year, const int month);
     static bool IsLeapYear(const int year);
 public:
+    Time GetTime();
     DayOfWeek GetDayOfWeek();
     DateTimeKind GetDateTimeKind();
     TimeSpan GetTimeOfDay();
@@ -227,12 +238,13 @@ public:
     using str_type = _strT;
 
     str_type ToExString() {
+        auto str = ToString();
         return NULL;
     }
 
 };
 
-using DateTimeExString = DateTimeEx<std::string>;
+using DateTimeExWString = DateTimeEx<std::wstring>;
 
 }
 }

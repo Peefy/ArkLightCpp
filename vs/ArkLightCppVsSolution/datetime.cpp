@@ -498,8 +498,8 @@ DateTime DateTime::Now()
 
 DateTime DateTime::UtcNow()
 {
-    slong fileTime = 0;
 #if defined _MSC_VER
+    slong fileTime = 0;
     FILETIME t1;
     GetSystemTimeAsFileTime(&t1);
     fileTime = t1.dwHighDateTime << 32 + t1.dwLowDateTime;
