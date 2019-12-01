@@ -915,6 +915,11 @@ bool DateTime::Equals(const DateTime &value)
     return getInternalTicks() == value.getInternalTicks();
 }
 
+bool DateTime::EqualsMonthAndDay(DateTime& value)
+{
+    return Month() == value.Month() && Day() == value.Day();
+}
+
 DateTime DateTime::operator+(const TimeSpan &t)
 {
     slong internalTicks = getInternalTicks();

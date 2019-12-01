@@ -6,21 +6,19 @@ namespace arklight
 namespace datetime
 {
 
-typedef wstring String;
-
-static const long lunarInfo[] = {0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
-                                 0x056a0, 0x09ad0, 0x055d2, 0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0,
-                                 0x14977, 0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970, 0x06566,
-                                 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950, 0x0d4a0, 0x1d8a6, 0x0b550,
-                                 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557, 0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5d0,
-                                 0x14573, 0x052d0, 0x0a9a8, 0x0e950, 0x06aa0, 0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263,
-                                 0x0d950, 0x05b57, 0x056a0, 0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0,
-                                 0x195a6, 0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570, 0x04af5,
-                                 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0, 0x0c960, 0x0d954, 0x0d4a0,
-                                 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5, 0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9,
-                                 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930, 0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0,
-                                 0x0d260, 0x0ea65, 0x0d530, 0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520,
-                                 0x0dd45, 0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0};
+static const long long lunarInfo[] = {0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554,
+                                      0x056a0, 0x09ad0, 0x055d2, 0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0,
+                                      0x14977, 0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970, 0x06566,
+                                      0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950, 0x0d4a0, 0x1d8a6, 0x0b550,
+                                      0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557, 0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5d0,
+                                      0x14573, 0x052d0, 0x0a9a8, 0x0e950, 0x06aa0, 0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263,
+                                      0x0d950, 0x05b57, 0x056a0, 0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0,
+                                      0x195a6, 0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570, 0x04af5,
+                                      0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0, 0x0c960, 0x0d954, 0x0d4a0,
+                                      0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5, 0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9,
+                                      0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930, 0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0,
+                                      0x0d260, 0x0ea65, 0x0d530, 0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520,
+                                      0x0dd45, 0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0};
 
 static const int year20[] = {1, 4, 1, 2, 1, 2, 1, 1, 2, 1, 2, 1};
 static const int year19[] = {0, 3, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0};
@@ -31,7 +29,8 @@ static const String Zhi[]{L"子", L"丑", L"寅", L"卯", L"辰", L"巳", L"午"
 static const String Animals[]{L"鼠", L"牛", L"虎", L"兔", L"龙", L"蛇", L"马", L"羊", L"猴", L"鸡", L"狗", L"猪"};
 static const String solarTerm[]{L"小寒", L"大寒", L"立春", L"雨水", L"惊蛰", L"春分", L"清明", L"谷雨", L"立夏", L"小满", L"芒种", L"夏至", L"小暑", L"大暑", L"立秋", L"处暑", L"白露", L"秋分", L"寒露", L"霜降", L"立冬", L"小雪", L"大雪", L"冬至"};
 static const int sTermInfo[]{0, 21208, 42467, 63836, 85337, 107014, 128867, 150921, 173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033, 353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758};
-static const String lFtv[]{L"0101农历春节", L"0202 龙抬头节", L"0115 元宵节", L"0505 端午节", L"0707 七夕情人节", L"0815 中秋节", L"0909 重阳节", L"1208 腊八节", L"1114 李君先生生日", L"1224 小年", L"0100除夕"};
+
+static const String lFtv[]{L"0101 农历春节", L"0202 龙抬头节", L"0115 元宵节", L"0505 端午节", L"0707 七夕情人节", L"0815 中秋节", L"0909 重阳节", L"1208 腊八节", L"1114 李君先生生日", L"1224 小年", L"0100 除夕"};
 static const String sFtv[]{L"0101 新年元旦",
                            L"0202 世界湿地日",
                            L"0207 国际声援南非日",
@@ -129,12 +128,16 @@ static const String sFtv[]{L"0101 新年元旦",
                            L"1226 毛主席诞辰",
                            L"1229 国际生物多样性日"};
 
-static int getLYearDays(int y);
-static int leapDays(int y);
-static inline int leapMonth(int y);
+static int GetLYearDays(int y);
+static int LeapDays(int y);
+static inline int LeapMonth(int y);
+static int MonthDays(const int y, const int m);
+static inline String AnimalsYear(const int y);
+static inline String Cyclicalm(const int num);
+static inline String Cyclical(const int y);
 
 // 传回农历y年的总天数
-static int lYearDays(int y)
+static int LYearDays(int y)
 {
     int i, sum = 348;
     for (i = 0x8000; i > 0x8; i >>= 1)
@@ -142,13 +145,13 @@ static int lYearDays(int y)
         if ((lunarInfo[y - 1900] & i) != 0)
             sum += 1;
     }
-    return (sum + leapDays(y));
+    return (sum + LeapDays(y));
 }
 
 // 传回农历y年闰月的天数
-static int leapDays(int y)
+static int LeapDays(int y)
 {
-    if (leapMonth(y) != 0)
+    if (LeapMonth(y) != 0)
     {
         if ((lunarInfo[y - 1900] & 0x10000) != 0)
             return 30;
@@ -160,7 +163,7 @@ static int leapDays(int y)
 }
 
 // 传回农历y年闰哪个月 1-12 , 没闰传回 0
-static inline int leapMonth(int y)
+static inline int LeapMonth(int y)
 {
     return (int)(lunarInfo[y - 1900] & 0xf);
 }
@@ -175,32 +178,32 @@ static int MonthDays(const int y, const int m)
 }
 
 // 传回农历y年的生肖
-static String AnimalsYear(const int y)
+static inline String AnimalsYear(const int y)
 {
     return Animals[(y - 4) % 12];
 }
 
 // 传入月日的offset 传回干支,0=甲子
-static String Cyclicalm(const int num)
+static inline String Cyclicalm(const int num)
 {
     return (Gan[num % 10] + Zhi[num % 12]);
 }
 
 // 传入offset 传回干支, 0=甲子
-static String Cyclical(const int y)
+static inline String Cyclical(const int y)
 {
     int num = y - 1900 + 36;
     return (Cyclicalm(num));
 }
 
 // 传出农历.year0 .month1 .day2 .yearCyl3 .monCyl4 .dayCyl5 .isLeap6
-void Lunar(const int y, const int m, long nongDate[7])
+void Lunar(const int y, const int m, __OUT__ long long nongDate[7])
 {
     int i = 0, temp = 0, leap = 0;
     DateTime baseDate = DateTime(1900 + 1900, 2, 31);
     DateTime objDate = DateTime(y + 1900, m + 1, 1);
     TimeSpan ts = (objDate - baseDate);
-    long offset = (long)ts.TotalDays;
+    long long offset = (long long)ts.TotalDays();
     if (y < 2000)
         offset += year19[m - 1];
     if (y > 2000)
@@ -270,35 +273,264 @@ void Lunar(const int y, const int m, long nongDate[7])
     }
     nongDate[1] = i;
     nongDate[2] = offset + 1;
-    return nongDate;
 }
 
-template <typename StringT>
-ChinaDateBase<StringT>::ChinaDateBase() : _tick(0),
+// 传出y年m月d日对应的农历.year0 .month1 .day2 .yearCyl3 .monCyl4 .dayCyl5 .isLeap6
+static void CalElement(int y, int m, int d, __OUT__ long long nongDate[7])
+{
+    int i = 0, temp = 0, leap = 0;
+
+    DateTime baseDate = DateTime(1900, 1, 31);
+    DateTime objDate = DateTime(y, m, d);
+    TimeSpan ts = objDate - baseDate;
+
+    long long offset = (long long)ts.TotalDays();
+
+    nongDate[5] = offset + 40;
+    nongDate[4] = 14;
+
+    for (i = 1900; i < 2050 && offset > 0; i++)
+    {
+        temp = LYearDays(i);
+        offset -= temp;
+        nongDate[4] += 12;
+    }
+    if (offset < 0)
+    {
+        offset += temp;
+        i--;
+        nongDate[4] -= 12;
+    }
+    nongDate[0] = i;
+    nongDate[3] = i - 1864;
+    leap = LeapMonth(i); // 闰哪个月
+    nongDate[6] = 0;
+
+    for (i = 1; i < 13 && offset > 0; i++)
+    {
+        // 闰月
+        if (leap > 0 && i == (leap + 1) && nongDate[6] == 0)
+        {
+            --i;
+            nongDate[6] = 1;
+            temp = LeapDays((int)nongDate[0]);
+        }
+        else
+        {
+            temp = MonthDays((int)nongDate[0], i);
+        }
+
+        // 解除闰月
+        if (nongDate[6] == 1 && i == (leap + 1))
+            nongDate[6] = 0;
+        offset -= temp;
+        if (nongDate[6] == 0)
+            nongDate[4]++;
+    }
+
+    if (offset == 0 && leap > 0 && i == leap + 1)
+    {
+        if (nongDate[6] == 1)
+        {
+            nongDate[6] = 0;
+        }
+        else
+        {
+            nongDate[6] = 1;
+            --i;
+            --nongDate[4];
+        }
+    }
+    if (offset < 0)
+    {
+        offset += temp;
+        --i;
+        --nongDate[4];
+    }
+    nongDate[1] = i;
+    nongDate[2] = offset + 1;
+}
+
+static String GetChinaDate(int day)
+{
+    String a = L"";
+    if (day == 10)
+        return L"初十";
+    if (day == 20)
+        return L"二十";
+    if (day == 30)
+        return L"三十";
+    int two = (int)((day) / 10);
+    if (two == 0)
+        a = L"初";
+    if (two == 1)
+        a = L"十";
+    if (two == 2)
+        a = L"廿";
+    if (two == 3)
+        a = L"三";
+    int one = (int)(day % 10);
+    switch (one)
+    {
+    case 1:
+        a += L"一";
+        break;
+    case 2:
+        a += L"二";
+        break;
+    case 3:
+        a += L"三";
+        break;
+    case 4:
+        a += L"四";
+        break;
+    case 5:
+        a += L"五";
+        break;
+    case 6:
+        a += L"六";
+        break;
+    case 7:
+        a += L"七";
+        break;
+    case 8:
+        a += L"八";
+        break;
+    case 9:
+        a += L"九";
+        break;
+    }
+    return a;
+}
+
+static DateTime STerm(int y, int n)
+{
+    double ms = 31556925974.7 * (y - 1900);
+    double ms1 = sTermInfo[n];
+    DateTime offDate = DateTime(1900, 1, 6, 2, 5, 0);
+    offDate = offDate.AddMilliseconds(ms);
+    offDate = offDate.AddMinutes(ms1);
+    return offDate;
+}
+
+ChinaDateBase::ChinaDateBase() : _tick(0),
                                           _time(0),
                                           _intYear(0),    // 农历年(整型)
                                           _intMonth(0),   // 农历月(整型)
                                           _intDay(0),     // 农历天(整型)
-                                          _strYear(""),   // 农历年(字符)
-                                          _strMonth(""),  // 农历月(字符)
-                                          _strDay(""),    // 农历天(字符)
-                                          _anm(""),       // 字符属相
-                                          _socalTerm(""), // 二十四节气
-                                          _ftvl(""),      //阴历节日
-                                          _ftvs("")       //阳历节日
+                                          _strYear(L""),   // 农历年(字符)
+                                          _strMonth(L""),  // 农历月(字符)
+                                          _strDay(L""),    // 农历天(字符)
+                                          _anm(L""),       // 字符属相
+                                          _socalTerm(L""), // 二十四节气
+                                          _ftvl(L""),      //阴历节日
+                                          _ftvs(L"")       //阳历节日
 {
 }
 
-template <typename StringT>
-ChinaDateBase<StringT>::~ChinaDateBase()
+ChinaDateBase::~ChinaDateBase()
 {
 }
 
-template <typename StringT>
-int ChinaDateBase<StringT>::GetLongSecond()
+int ChinaDateBase::GetLongSecond()
 {
     return _time;
 }
 
-} // namespace util
+int ChinaDateBase::GetDaysByMonth(int y, int m)
+{
+    int days[] = {31, DateTime::IsLeapYear(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    return days[m - 1];
+}
+
+DateTime ChinaDateBase::GetMondayDateByDate(DateTime &dt)
+{
+    double d = 0;
+    switch ((int)dt.GetDayOfWeek())
+    {
+    //case 1: d = 0; break;
+    case 2:
+        d = -1;
+        break;
+    case 3:
+        d = -2;
+        break;
+    case 4:
+        d = -3;
+        break;
+    case 5:
+        d = -4;
+        break;
+    case 6:
+        d = -5;
+        break;
+    case 0:
+        d = -6;
+        break;
+    }
+    return dt.AddDays(d);
+}
+
+ChinaDateBase ChinaDateBase::GetChinaDate(DateTime &dt)
+{
+    ChinaDateBase cd;
+    int year = dt.Year();
+    int month = dt.Month();
+    int date = dt.Day();
+    long long l[7] = {0, 0, 0, 0, 0, 0, 0};
+    CalElement(year, month, date, l);
+    cd._intYear = (int)l[0];
+    cd._intMonth = (int)l[1];
+    cd._intDay = (int)l[2];
+    cd._strYear = Cyclical(year);
+    cd._anm = AnimalsYear(year);
+    cd._strMonth = nStr1[(int)l[1]];
+    // cd._strDay = GetChinaDate((int)(l[2]));
+
+    for (int i = 0; i < 24; i++)
+    {
+        auto s1 = STerm(dt.Year(), i);
+        if (s1.EqualsMonthAndDay(dt) == true)
+        {
+            cd._socalTerm = solarTerm[i];
+            break;
+        }
+    }
+
+    for (auto&& s : sFtv)
+    {
+        auto s1 = _wtoi(s.substr(0, 2).c_str());
+        auto s2 = _wtoi(s.substr(2, 2).c_str());
+        if (s1 == dt.Month() && s2 == dt.Day())
+        {
+            cd._ftvs = s.substr(5);
+            break;
+        }
+    }
+
+    for (auto&& s : lFtv)
+    {
+        auto s1 = _wtoi(s.substr(0, 2).c_str());
+        auto s2 = _wtoi(s.substr(2, 2).c_str());
+        if (s1 == dt.Month() && s2 == dt.Day())
+        {
+            cd._ftvl = s.substr(5);
+            break;
+        }
+    }
+    dt = dt.AddDays(1);
+    year = dt.Year();
+    month = dt.Month();
+    date = dt.Day();
+    CalElement(year, month, date, l);
+    if (l[1] == dt.Month() && l[2] == dt.Day())
+    {
+        cd._ftvl = L"除夕";
+    }       
+    return cd;
+}
+
+
+
+} // namespace datetime
 } // namespace arklight

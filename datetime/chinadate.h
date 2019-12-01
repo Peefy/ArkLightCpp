@@ -14,7 +14,11 @@ namespace arklight
 namespace datetime
 {
 
-template <typename StringT>
+#define __OUT__
+#define __IN__
+
+typedef wstring String;
+
 class ChinaDateBase
 {
 public:
@@ -31,19 +35,22 @@ private:
     int _intYear;       // 农历年(整型)
     int _intMonth;      // 农历月(整型)
     int _intDay;        // 农历天(整型)
-    StringT _strYear;   // 农历年(字符)
-    StringT _strMonth;  // 农历月(字符)
-    StringT _strDay;    // 农历天(字符)
-    StringT _anm;       // 农历属相
-    StringT _socalTerm; // 二十四节气
-    StringT _ftvl;      //阴历节日
-    StringT _ftvs;      //阳历节日
+    String _strYear;   // 农历年(字符)
+    String _strMonth;  // 农历月(字符)
+    String _strDay;    // 农历天(字符)
+    String _anm;       // 农历属相
+    String _socalTerm; // 二十四节气
+    String _ftvl;      //阴历节日
+    String _ftvs;      //阳历节日
 public:
     int GetLongSecond();
-
+    static int GetDaysByMonth(int y, int m);
+    static DateTime GetMondayDateByDate(DateTime& dt);
+    static ChinaDateBase GetChinaDate(DateTime& dt);
 };
 
-using ChinaDate = ChinaDateBase<wstring>;
+using ChinaDate = ChinaDateBase;
+
 
 } // namespace util
 } // namespace arklight

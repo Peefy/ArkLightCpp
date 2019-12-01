@@ -192,6 +192,7 @@ public:
     slong ToBinary();
     int CompareTo(const DateTime& value);
     bool Equals(const DateTime& value); 
+    bool EqualsMonthAndDay(DateTime& value); 
     DateTime operator +(const TimeSpan& t);
     DateTime operator -(const TimeSpan& t);
     TimeSpan operator -(const DateTime& d);
