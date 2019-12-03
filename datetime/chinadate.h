@@ -51,6 +51,15 @@ public:
 
 using ChinaDate = ChinaDateBase;
 
+class ChineseDate
+{
+private:
+    
+public:
+    ChineseDate() = default;
+    virtual ~ChineseDate();
+};
+
 
 } // namespace util
 } // namespace arklight

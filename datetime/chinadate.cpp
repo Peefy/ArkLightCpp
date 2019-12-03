@@ -530,7 +530,13 @@ ChinaDateBase ChinaDateBase::GetChinaDate(DateTime &dt)
     return cd;
 }
 
+ChineseDate::ChineseDate(/* args */)
+{
+}
 
+ChineseDate::~ChineseDate()
+{
+}
 
 } // namespace datetime
 } // namespace arklight
