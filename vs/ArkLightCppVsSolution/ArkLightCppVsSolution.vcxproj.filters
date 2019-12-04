@@ -18,12 +18,18 @@
     <ClCompile Include="ArkLightCppVsSolution.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\time\datetime.cpp">
+    <ClCompile Include="..\..\datetime\datetime.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\datetime\chinadate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\time\datetime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\datetime\chinadate.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

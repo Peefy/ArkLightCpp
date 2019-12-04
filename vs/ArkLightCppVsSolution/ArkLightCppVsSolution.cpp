@@ -1,15 +1,18 @@
 ﻿
 #include <iostream>
 
-#include "../../time/datetime.h"
+#include "../../datetime/datetime.h"
+#include "../../datetime/chinadate.h"
 
 using namespace arklight::datetime;
 
 int main()
 {
     std::cout << "Hello World!\n"; 
-	auto time = DateTime::Now();
-	cout << time.ToString() << endl;
+	auto now = DateTime::Now();
+	cout << now.ToString() << endl;
+	ChineseCalendar c = ChineseCalendar(now);
+	wcout << c.AnimalString();
 	getchar();
 	return 0;
 }

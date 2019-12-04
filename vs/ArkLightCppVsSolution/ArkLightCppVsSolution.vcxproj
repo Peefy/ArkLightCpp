@@ -151,10 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\time\datetime.cpp" />
+    <ClCompile Include="..\..\datetime\chinadate.cpp" />
+    <ClCompile Include="..\..\datetime\datetime.cpp" />
     <ClCompile Include="ArkLightCppVsSolution.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\datetime\chinadate.h" />
     <ClInclude Include="..\..\time\datetime.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

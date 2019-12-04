@@ -1,5 +1,6 @@
 
 #include <stdint.h>
+#include <stdio.h>
 #include <iostream>
 #include <algorithm>
 #include <cmath>
@@ -8,6 +9,7 @@
 #include <memory>
 
 #include "datetime/datetime.h"
+#include "datetime/chinadate.h"
 #include "platform/platform.hpp"
 
 using namespace std;
@@ -18,7 +20,10 @@ using namespace arklight::datetime;
 int main()
 {  
     std::cout << "Hello World!\n"; 
-    std::cout << DateTime::Now().ToString() << endl;
+    auto now = DateTime::Now();
+    std::cout << now.ToString() << endl;
+    ChineseCalendar c = ChineseCalendar(now);
+    cout << c.AnimalString();
     return 0;
 }
 

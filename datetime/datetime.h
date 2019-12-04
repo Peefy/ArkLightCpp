@@ -23,13 +23,13 @@ namespace datetime
 {
 
 enum class DayOfWeek {
-	Sunday,
-	Monday,
-	Tuesday,
-	Wednesday,
-	Thursday,
-	Friday,
-	Saturday
+	Sunday = 1,
+	Monday = 2,
+	Tuesday = 3,
+	Wednesday = 4,
+	Thursday = 5,
+	Friday = 6,
+	Saturday = 7
 };
 
 enum class DateTimeKind {
@@ -133,6 +133,8 @@ private:
 struct DateTime
 {
 public:
+    constexpr DateTime() = default;
+    constexpr DateTime(const DateTime& dateTime) = default;
     DateTime(slong ticks);
     DateTime(ulong dateData); 
     DateTime(slong ticks, DateTimeKind kind);
@@ -144,7 +146,7 @@ public:
     virtual ~DateTime() {}
 private:
     DateTime(slong ticks, DateTimeKind kind, bool isAmbiguousDst);
-    DateTime() {}
+    
 public:
     static DateTime Now();
     static DateTime UtcNow();
@@ -182,6 +184,7 @@ public:
     DateTime ToLocalTime();
     DateTime ToUniversalTime();
     string ToString();
+    wstring ToWString();
     string ToLongDateString();
     string ToLongTimeString();
     string ToShortDateString();

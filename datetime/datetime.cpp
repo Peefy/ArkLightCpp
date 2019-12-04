@@ -845,6 +845,13 @@ string DateTime::ToString()
     // return DateTimeFormat::Format(this, nullptr, DateTimeFormatInfo::CurrentInfo);
 }
 
+wstring DateTime::ToWString() 
+{
+    std::wstringstream ss;
+    ss << Year() << "-" << Month() << "-" << Day() << "-" << Hour() << "-" << Minute() << "-" << Second();
+    return ss.str();
+}
+
 string DateTime::ToLongDateString()
 {
     return ToString();
