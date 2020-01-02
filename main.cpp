@@ -21,7 +21,10 @@ int main()
 {  
     std::cout << "Hello World!\n"; 
     auto now = DateTime::Now();
+    // 现在时间
     std::cout << now.ToString() << endl;
+    // 与标准时区的时差
+    std::cout << (now - DateTime::UtcNow()).Hours() << endl;
     ChineseCalendar c = ChineseCalendar(now);
     cout << c.AnimalString();
     return 0;
