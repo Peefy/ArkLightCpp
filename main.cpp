@@ -20,9 +20,11 @@ using namespace arklight::datetime;
 int main()
 {  
     std::cout << "Hello World!\n"; 
-    auto now = DateTime::Now();
+    auto now = DateTime(2019, 10, 11).AddDays(120);
     // 现在时间
     std::cout << now.ToString() << endl;
+    // 星期几
+    std::cout << static_cast<int>(now.GetDayOfWeek()) << endl;
     // 与标准时区的时差
     std::cout << (now - DateTime::UtcNow()).Hours() << endl;
     ChineseCalendar c = ChineseCalendar(now);

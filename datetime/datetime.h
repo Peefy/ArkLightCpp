@@ -22,33 +22,37 @@ namespace arklight
 namespace datetime
 {
 
+/*  星期类  */
 enum class DayOfWeek {
-	Sunday = 1,
-	Monday = 2,
-	Tuesday = 3,
-	Wednesday = 4,
-	Thursday = 5,
-	Friday = 6,
-	Saturday = 7
+	Sunday = 0,          /*  星期日  */
+	Monday = 1,          /*  星期一  */
+	Tuesday = 2,         /*  星期二  */
+	Wednesday = 3,       /*  星期三  */
+	Thursday = 4,        /*  星期四  */
+	Friday = 5,          /*  星期五  */
+	Saturday = 6         /*  星期六  */
 };
 
+/*  时间类型类  */
 enum class DateTimeKind {
-	Unspecified,
-	Utc,
-	Local
+	Unspecified,         /*  未确定  */
+	Utc,                 /*  国际标准时  */
+	Local                /*  当地时区时间  */
 };
 
+/*  时间类  */
 struct Time
 {
-    int Year;
-    int Month;
-    int Day;
-    int Hour;
-    int Minute;
-    int Second; 
-    int Millisecond;
+    int Year;           /*  年  */
+    int Month;          /*  月  */
+    int Day;            /*  日  */
+    int Hour;           /*  时  */
+    int Minute;         /*  分  */
+    int Second;         /*  秒  */
+    int Millisecond;    /*  毫秒  */
 };
 
+/*  时间间隔类  */
 struct TimeSpan
 {
 public:
@@ -58,9 +62,9 @@ public:
     TimeSpan(int days, int hours, int minutes, int seconds, int milliseconds);
     virtual ~TimeSpan() {}
 public:
-    static TimeSpan Zero();
-    static TimeSpan MinValue();
-    static TimeSpan MaxValue();
+    static TimeSpan Zero();           /*  零时间间隔  */
+    static TimeSpan MinValue();       /*  最小时间间隔  */
+    static TimeSpan MaxValue();       /*  最大时间间隔  */
     static TimeSpan FromDays(const double value);
     static TimeSpan FromHours(const double value);
     static TimeSpan FromMilliseconds(const double value);
@@ -107,11 +111,13 @@ private:
     double TicksToOADate(slong value); 
 };
 
+/*  时区类  */
 struct TimeZone
 {
 
 };
 
+/*  时区信息类  */
 class TimeZoneInfo
 {
     enum TimeZoneInfoResult
@@ -123,6 +129,7 @@ class TimeZoneInfo
     };
 };
 
+/*  日期格式类  */
 class DateTimeFormat
 {
 private:
